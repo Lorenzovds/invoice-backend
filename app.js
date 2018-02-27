@@ -15,6 +15,8 @@ const {
 
 const app = express()
 
+const foo
+
 // log every incomming request
 app.use(pino)
 
