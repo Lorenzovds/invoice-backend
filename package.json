@@ -3,8 +3,16 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "start": "node ./bin/www",
-    "precommit": "standard --verbose | snazzy"
+    "start": "nodemon ./bin/www",
+    "precommit": "standard --verbose | snazzy",
+    "client": "cd client && yarn start",
+    "server": "yarn start",
+    "dev": "concurrently --kill-others-on-fail \"yarn server\" \"yarn client\""
+  },
+  "standard": {
+    "env": {
+      "jest": true
+    }
   },
   "dependencies": {
     "body-parser": "~1.15.1",
