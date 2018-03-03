@@ -5,7 +5,7 @@ class NewInvoiceContainer extends Component {
   render () {
     return (
       <div>
-        <h2>new invoice</h2>
+        <h2>Create new Invoice</h2>
       </div>
     )
   }

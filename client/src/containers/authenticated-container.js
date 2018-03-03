@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import { Route, Switch, Redirect } from 'react-router'
+import { Link } from 'react-router-dom'
 import InvoicesContainer from './invoices-container'
 import {Header, Sidebar, Grid,
   Segment, Menu, Icon, Button } from 'semantic-ui-react'
@@ -65,12 +66,35 @@ class AuthenticatedContainer extends Component {
   renderMenu () {
     const { activeItem } = this.state
     return (
-      <Menu.Item name='home'
-        onClick={this.handleMenuClick.bind(this)}
-        active={activeItem === 'home'}>
-        <Icon name='home' />
-        Home
-      </Menu.Item>
+      <div>
+        <Menu.Item
+          as={Link}
+          name='home'
+          onClick={this.handleMenuClick.bind(this)}
+          active={activeItem === 'home'}
+          to='/'>
+          <Icon name={'home'} />
+          Home
+        </Menu.Item>
+        <Menu.Item
+          name='all'
+          as={Link}
+          onClick={this.handleMenuClick.bind(this)}
+          to='/invoices'
+          active={activeItem === 'all'}>
+          <Icon name='list layout' />
+          All
+        </Menu.Item>
+        <Menu.Item
+          name='new'
+          as={Link}
+          onClick={this.handleMenuClick.bind(this)}
+          to='/invoices/new'
+          active={activeItem === 'new'}>
+          <Icon name='plus square outline' />
+          New
+        </Menu.Item>
+      </div>
     )
   }
 
