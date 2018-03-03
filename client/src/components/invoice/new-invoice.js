@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
-import '../App.css'
+import '../../App.css'
 
-class NewInvoiceContainer extends Component {
+class NewInvoice extends Component {
   constructor (props) {
     super(props)
     this.setActiveMenu = props.setActiveMenu
@@ -20,4 +20,4 @@ class NewInvoiceContainer extends Component {
   }
 }
 
-export default NewInvoiceContainer
+export default NewInvoice

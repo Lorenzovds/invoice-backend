@@ -1,8 +1,9 @@
 import React, { Component } from 'react'
 import { Route, Switch } from 'react-router'
 import '../App.css'
-import InvoiceContainer from './invoice-container'
-import NewInvoiceContainer from './new-invoice-container'
+import Invoice from '../components/invoice/invoice'
+import NewInvoice from '../components/invoice/new-invoice'
+import AllInvoices from '../components/invoice/all-invoices'
 
 class InvoicesContainer extends Component {
   constructor (props) {
@@ -14,9 +15,9 @@ class InvoicesContainer extends Component {
     return (
       <div>
         <Switch>
-          <Route exact path='/invoices' render={this.renderAllInvoices} />
-          <Route exact path='/invoices/new' render={props => <NewInvoiceContainer setActiveMenu={this.setActiveMenu} />} />
-          <Route exact path='/invoices/:id' component={InvoiceContainer} />
+          <Route exact path='/invoices' render={() => this.renderAllInvoices()} />
+          <Route exact path='/invoices/new' render={() => this.renderNewInvoice()} />
+          <Route exact path='/invoices/:id' component={Invoice} />
         </Switch>
       </div>
     )
@@ -24,7 +25,13 @@ class InvoicesContainer extends Component {
 
   renderAllInvoices () {
     return (
-      <h2>All Invoices</h2>
+      <AllInvoices setActiveMenu={this.setActiveMenu} />
+    )
+  }
+
+  renderNewInvoice () {
+    return (
+      <NewInvoice setActiveMenu={this.setActiveMenu} />
     )
   }
 }

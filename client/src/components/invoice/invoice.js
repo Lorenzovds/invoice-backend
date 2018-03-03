@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
-import '../App.css'
+import '../../App.css'
 
-class InvoiceContainer extends Component {
+class Invoice extends Component {
   render () {
     return (
       <div>
@@ -11,4 +11,4 @@ class InvoiceContainer extends Component {
   }
 }
 
-export default InvoiceContainer
+export default Invoice
