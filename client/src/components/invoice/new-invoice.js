@@ -22,9 +22,9 @@ class NewInvoice extends Component {
     return (
       <Container fluid>
         <Header as='h2'> Nieuwe factuur</Header>
-        { this.headerForm() }
-        { this.renderTable() }
-        { this.addRow() }
+        <div>{ this.headerForm() }</div>
+        <div>{ this.renderTable() }</div>
+        <div>{ this.addRow() }</div>
       </Container>
     )
   }
@@ -54,7 +54,7 @@ class NewInvoice extends Component {
 
   renderTable () {
     return (
-      <Table celled>
+      <Table celled style={{marginBottom: '30px'}}>
         <Table.Header>
           <Table.Row>
             <Table.HeaderCell>Omschrijving</Table.HeaderCell>
