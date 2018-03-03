@@ -42,7 +42,7 @@ class AuthenticatedContainer extends Component {
                     icon={this.state.sidebarButton}
                     style={{position: 'fixed', marginTop: '50vh'}}
                     floated='left' />
-                  <Grid style={{'margin-left': '5%'}}>
+                  <Grid style={{'marginLeft': '5%'}}>
                     <Grid.Row>
                       <Grid.Column style={{width: '75vw'}}>
                         { this.renderHeader() }
