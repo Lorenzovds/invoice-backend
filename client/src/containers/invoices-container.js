@@ -13,13 +13,11 @@ class InvoicesContainer extends Component {
   }
   render () {
     return (
-      <div>
-        <Switch>
-          <Route exact path='/invoices' render={() => this.renderAllInvoices()} />
-          <Route exact path='/invoices/new' render={() => this.renderNewInvoice()} />
-          <Route exact path='/invoices/:id' component={Invoice} />
-        </Switch>
-      </div>
+      <Switch>
+        <Route exact path='/invoices' render={() => this.renderAllInvoices()} />
+        <Route exact path='/invoices/new' render={() => this.renderNewInvoice()} />
+        <Route exact path='/invoices/:id' component={Invoice} />
+      </Switch>
     )
   }
 

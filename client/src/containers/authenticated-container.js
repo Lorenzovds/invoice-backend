@@ -3,7 +3,7 @@ import { Route, Switch, Redirect } from 'react-router'
 import { Link } from 'react-router-dom'
 import InvoicesContainer from './invoices-container'
 import {Header, Sidebar, Grid,
-  Segment, Menu, Icon, Button } from 'semantic-ui-react'
+  Segment, Menu, Icon, Button, Container } from 'semantic-ui-react'
 import { withAuth } from '@okta/okta-react'
 
 import '../App.css'
@@ -26,7 +26,7 @@ class AuthenticatedContainer extends Component {
         <Sidebar.Pushable as={Segment}>
           <Sidebar as={Menu}
             visible={sidebarVisible}
-            animation='slide along'
+            animation='push'
             width='thin'
             icon='labeled'
             vertical
@@ -34,25 +34,25 @@ class AuthenticatedContainer extends Component {
             {this.renderMenu()}
           </Sidebar>
           <Sidebar.Pusher>
-            <Grid columns='equal'>
+            <Grid>
               <Grid.Row>
-                <Grid.Column width={1}>
+                <Grid.Column>
                   <Button
                     onClick={() => this.toggleSidebar()}
                     icon={this.state.sidebarButton}
-                    style={{marginTop: '50vh'}}
+                    style={{position: 'fixed', marginTop: '50vh'}}
                     floated='left' />
-                </Grid.Column>
-                <Grid.Column>
-                  <Grid columns='equal'>
+                  <Grid style={{'margin-left': '5%'}}>
                     <Grid.Row>
-                      <Grid.Column>
+                      <Grid.Column style={{width: '75vw'}}>
                         { this.renderHeader() }
                       </Grid.Column>
                     </Grid.Row>
                     <Grid.Row>
-                      <Grid.Column>
-                        { this.renderRouter() }
+                      <Grid.Column style={{width: '75vw'}}>
+                        <Container fluid>
+                          { this.renderRouter() }
+                        </Container>
                       </Grid.Column>
                     </Grid.Row>
                   </Grid>
