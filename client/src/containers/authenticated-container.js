@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Route, Switch } from 'react-router'
+import { Route, Switch, Redirect } from 'react-router'
 import InvoicesContainer from './invoices-container'
 import {Header, Sidebar, Grid,
   Segment, Menu, Icon, Button } from 'semantic-ui-react'
@@ -11,7 +11,8 @@ class AuthenticatedContainer extends Component {
     super(props)
     this.state = {
       sidebarVisible: false,
-      sidebarButton: 'angle double right'
+      sidebarButton: 'angle double right',
+      activeItem: 'home'
     }
   }
 
@@ -27,10 +28,7 @@ class AuthenticatedContainer extends Component {
             icon='labeled'
             vertical
             inverted>
-            <Menu.Item name='home'>
-              <Icon name='home' />
-              Home
-            </Menu.Item>
+            {this.renderMenu()}
           </Sidebar>
           <Sidebar.Pusher onClick={() => this.handleMainBodyClick()}>
             <Grid columns='equal'>
@@ -51,7 +49,7 @@ class AuthenticatedContainer extends Component {
                     </Grid.Row>
                     <Grid.Row>
                       <Grid.Column>
-                        { this.getRouter() }
+                        { this.renderRouter() }
                       </Grid.Column>
                     </Grid.Row>
                   </Grid>
@@ -64,15 +62,16 @@ class AuthenticatedContainer extends Component {
     )
   }
 
-  handleMainBodyClick () {
-    const { sidebarVisible } = this.state
-    if (sidebarVisible) this.toggleSidebar(false)
-  }
-
-  toggleSidebar (state) {
-    const newState = state || !this.state.sidebarVisible
-    this.setState({ sidebarVisible: newState })
-    this.setState({ sidebarButton: newState ? 'angle double left' : 'angle double right' })
+  renderMenu () {
+    const { activeItem } = this.state
+    return (
+      <Menu.Item name='home'
+        onClick={this.handleMenuClick.bind(this)}
+        active={activeItem === 'home'}>
+        <Icon name='home' />
+        Home
+      </Menu.Item>
+    )
   }
 
   renderHeader () {
@@ -88,14 +87,30 @@ class AuthenticatedContainer extends Component {
     )
   }
 
-  getRouter () {
+  renderRouter () {
     return (
       <Segment raised>
         <Switch>
+          <Route exact path='/' render={() => <Redirect to='/invoices' />} />
           <Route path='/invoices' component={InvoicesContainer} />
         </Switch>
       </Segment>
     )
+  }
+
+  handleMainBodyClick () {
+    const { sidebarVisible } = this.state
+    if (sidebarVisible) this.toggleSidebar(false)
+  }
+
+  toggleSidebar (state) {
+    const newState = state || !this.state.sidebarVisible
+    this.setState({ sidebarVisible: newState })
+    this.setState({ sidebarButton: newState ? 'angle double left' : 'angle double right' })
+  }
+
+  handleMenuClick (e, { name }) {
+    this.setState({ activeItem: name })
   }
 }
 

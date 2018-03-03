@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import { Route, Switch } from 'react-router'
 import '../App.css'
 import InvoiceContainer from './invoice-container'
+import NewInvoiceContainer from './new-invoice-container'
 
 class InvoicesContainer extends Component {
   render () {
@@ -10,6 +11,7 @@ class InvoicesContainer extends Component {
         <h2>invoices</h2>
         <Switch>
           <Route exact path='/invoices' render={this.renderAllInvoices} />
+          <Route exact path='/invoices/new' component={NewInvoiceContainer} />
           <Route exact path='/invoices/:id' component={InvoiceContainer} />
         </Switch>
       </div>
