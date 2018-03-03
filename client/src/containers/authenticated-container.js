@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom'
 import InvoicesContainer from './invoices-container'
 import {Header, Sidebar, Grid,
   Segment, Menu, Icon, Button } from 'semantic-ui-react'
+import { withAuth } from '@okta/okta-react'
 
 import '../App.css'
 
@@ -15,6 +16,7 @@ class AuthenticatedContainer extends Component {
       sidebarButton: 'angle double left'
     }
     this.setActiveMenu = this.setActiveMenu.bind(this)
+    this.auth = props.auth
   }
 
   render () {
@@ -94,6 +96,12 @@ class AuthenticatedContainer extends Component {
           <Icon name='plus square outline' />
           New
         </Menu.Item>
+        <Menu.Item
+          name='logout'
+          onClick={this.auth.logout}>
+          <Icon name='key' />
+          Logout
+        </Menu.Item>
       </div>
     )
   }
@@ -142,4 +150,4 @@ class AuthenticatedContainer extends Component {
   }
 }
 
-export default AuthenticatedContainer
+export default withAuth(AuthenticatedContainer)

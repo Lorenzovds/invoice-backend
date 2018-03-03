@@ -1,6 +1,7 @@
 import React from 'react'
 import OktaAuth from '@okta/okta-auth-js'
 import { withAuth } from '@okta/okta-react'
+import { Icon, Button, Form, Grid, Header, Message, Segment } from 'semantic-ui-react'
 
 export default withAuth(class LoginForm extends React.Component {
   constructor (props) {
@@ -34,12 +35,12 @@ export default withAuth(class LoginForm extends React.Component {
       })
   }
 
-  handleUsernameChange (e) {
-    this.setState({ username: e.target.value })
+  handleUsernameChange (e, { value }) {
+    this.setState({ username: value })
   }
 
-  handlePasswordChange (e) {
-    this.setState({ password: e.target.value })
+  handlePasswordChange (e, { value }) {
+    this.setState({ password: value })
   }
 
   render () {
@@ -53,25 +54,52 @@ export default withAuth(class LoginForm extends React.Component {
       : null
 
     return (
-      <form onSubmit={this.handleSubmit}>
-        {errorMessage}
-        <div className='form-element'>
-          <label>Username:</label>
-          <input
-            id='username' type='text'
-            value={this.state.username}
-            onChange={this.handleUsernameChange} />
-        </div>
+      <div className='login-form'>
+        <Grid
+          textAlign='center'
+          style={{ height: '100%' }}
+          verticalAlign='middle'>
+          <Grid.Column style={{ maxWidth: 450 }}>
+            <Header as='h2' textAlign='center'>
+              <Icon name='key' />
+              {' '}Log-in to your account
+            </Header>
+            <Form
+              size='large'
+              onSubmit={this.handleSubmit.bind(this)}>
+              <Segment stacked>
+                <Form.Input
+                  fluid
+                  icon='user'
+                  value={this.state.username}
+                  onChange={this.handleUsernameChange.bind(this)}
+                  iconPosition='left'
+                  placeholder='E-mail address'
+                />
+                <Form.Input
+                  fluid
+                  icon='lock'
+                  value={this.state.password}
+                  onChange={this.handlePasswordChange.bind(this)}
+                  iconPosition='left'
+                  placeholder='Password'
+                  type='password'
+                />
 
-        <div className='form-element'>
-          <label>Password:</label>
-          <input
-            id='password' type='password'
-            value={this.state.password}
-            onChange={this.handlePasswordChange} />
-        </div>
-        <input id='submit' type='submit' value='Submit' />
-      </form>
+                <Button color='green' fluid size='large'>Login</Button>
+              </Segment>
+              {
+                errorMessage && (
+                  <Message
+                    negative>
+                    <Message.Header>Foute gebruikersnaam of wachtwoord</Message.Header>
+                  </Message>
+                )
+              }
+            </Form>
+          </Grid.Column>
+        </Grid>
+      </div>
     )
   }
 })
