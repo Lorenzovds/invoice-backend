@@ -5,13 +5,17 @@ import InvoiceContainer from './invoice-container'
 import NewInvoiceContainer from './new-invoice-container'
 
 class InvoicesContainer extends Component {
+  constructor (props) {
+    super(props)
+    Object.assign(this, props)
+    this.setActiveMenu('all')
+  }
   render () {
     return (
       <div>
-        <h2>invoices</h2>
         <Switch>
           <Route exact path='/invoices' render={this.renderAllInvoices} />
-          <Route exact path='/invoices/new' component={NewInvoiceContainer} />
+          <Route exact path='/invoices/new' render={props => <NewInvoiceContainer setActiveMenu={this.setActiveMenu} />} />
           <Route exact path='/invoices/:id' component={InvoiceContainer} />
         </Switch>
       </div>

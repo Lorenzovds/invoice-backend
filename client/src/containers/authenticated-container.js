@@ -11,10 +11,10 @@ class AuthenticatedContainer extends Component {
   constructor (props) {
     super(props)
     this.state = {
-      sidebarVisible: false,
-      sidebarButton: 'angle double right',
-      activeItem: 'home'
+      sidebarVisible: true,
+      sidebarButton: 'angle double left'
     }
+    this.setActiveMenu = this.setActiveMenu.bind(this)
   }
 
   render () {
@@ -31,7 +31,7 @@ class AuthenticatedContainer extends Component {
             inverted>
             {this.renderMenu()}
           </Sidebar>
-          <Sidebar.Pusher onClick={() => this.handleMainBodyClick()}>
+          <Sidebar.Pusher>
             <Grid columns='equal'>
               <Grid.Row>
                 <Grid.Column width={1}>
@@ -116,7 +116,7 @@ class AuthenticatedContainer extends Component {
       <Segment raised>
         <Switch>
           <Route exact path='/' render={() => <Redirect to='/invoices' />} />
-          <Route path='/invoices' component={InvoicesContainer} />
+          <Route path='/invoices' render={props => <InvoicesContainer setActiveMenu={this.setActiveMenu} />} />
         </Switch>
       </Segment>
     )
@@ -134,6 +134,10 @@ class AuthenticatedContainer extends Component {
   }
 
   handleMenuClick (e, { name }) {
+    this.setActiveMenu(name)
+  }
+
+  setActiveMenu (name) {
     this.setState({ activeItem: name })
   }
 }
