@@ -34,28 +34,22 @@ class AuthenticatedContainer extends Component {
             {this.renderMenu()}
           </Sidebar>
           <Sidebar.Pusher>
-            <Grid>
+            <Button
+              onClick={() => this.toggleSidebar()}
+              icon={this.state.sidebarButton}
+              style={{position: 'fixed', marginTop: '50vh'}}
+              floated='left' />
+            <Grid style={{'marginLeft': '5%'}}>
               <Grid.Row>
-                <Grid.Column>
-                  <Button
-                    onClick={() => this.toggleSidebar()}
-                    icon={this.state.sidebarButton}
-                    style={{position: 'fixed', marginTop: '50vh'}}
-                    floated='left' />
-                  <Grid style={{'marginLeft': '5%'}}>
-                    <Grid.Row>
-                      <Grid.Column style={{width: '75vw'}}>
-                        { this.renderHeader() }
-                      </Grid.Column>
-                    </Grid.Row>
-                    <Grid.Row>
-                      <Grid.Column style={{width: '75vw'}}>
-                        <Container fluid>
-                          { this.renderRouter() }
-                        </Container>
-                      </Grid.Column>
-                    </Grid.Row>
-                  </Grid>
+                <Grid.Column style={{width: '75vw'}}>
+                  { this.renderHeader() }
+                </Grid.Column>
+              </Grid.Row>
+              <Grid.Row>
+                <Grid.Column style={{width: '75vw'}}>
+                  <Container fluid>
+                    { this.renderRouter() }
+                  </Container>
                 </Grid.Column>
               </Grid.Row>
             </Grid>
