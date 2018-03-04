@@ -194,13 +194,14 @@ class NewInvoice extends Component {
     return reduce(entries, (acc, entry) => {
       const { amount, price, tax } = entry
       const totalPrice = this.calculatePrice(amount, price, tax)
+      debugger
       acc += totalPrice
       return acc
     }, 0)
   }
 
   calculatePrice (amount, price, tax) {
-    return (parseFloat(amount, 10) * parseFloat(price, 10)) * (1 + (parseFloat(tax, 10) / 100))
+    return parseFloat(((parseFloat(amount, 10) * parseFloat(price, 10)) * (1 + (parseFloat(tax, 10) / 100))).toFixed(2))
   }
 
   handleEntryChange (e, {name, value}) {
