@@ -3,7 +3,7 @@ import { Route, Switch, Redirect } from 'react-router'
 import { Link } from 'react-router-dom'
 import InvoicesContainer from './invoices-container'
 import {Header,
-  Container, Menu, Icon } from 'semantic-ui-react'
+  Segment, Menu, Icon } from 'semantic-ui-react'
 import { withAuth } from '@okta/okta-react'
 
 import '../App.css'
@@ -27,10 +27,10 @@ class AuthenticatedContainer extends Component {
         display: 'inline-flex',
         minHeight: '100%' }}>
         { this.renderMenu() }
-        <Container fluid style={{padding: '15px'}}>
+        <Segment raised style={{margin: '15px', 'width': '100%'}}>
           { this.renderHeader() }
           { this.renderRouter() }
-        </Container>
+        </Segment>
       </div>
     )
   }

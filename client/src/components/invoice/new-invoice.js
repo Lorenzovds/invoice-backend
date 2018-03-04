@@ -24,7 +24,6 @@ class NewInvoice extends Component {
         <Header as='h2'> Nieuwe factuur</Header>
         <div>{ this.headerForm() }</div>
         <div>{ this.renderTable() }</div>
-        <div>{ this.addRow() }</div>
       </Container>
     )
   }
@@ -55,19 +54,58 @@ class NewInvoice extends Component {
   renderTable () {
     return (
       <Table celled style={{marginBottom: '30px'}}>
-        <Table.Header>
-          <Table.Row>
-            <Table.HeaderCell>Omschrijving</Table.HeaderCell>
-            <Table.HeaderCell>Aantal</Table.HeaderCell>
-            <Table.HeaderCell>Prijs</Table.HeaderCell>
-            <Table.HeaderCell>BTW %</Table.HeaderCell>
-            <Table.HeaderCell>Totaal</Table.HeaderCell>
-          </Table.Row>
-        </Table.Header>
-        <Table.Body>
-          { map(this.state.entries, this.renderTableEntry.bind(this))}
-        </Table.Body>
+        {this.renderTableHeader()}
+        {this.renderTableBody()}
+        {this.renderTableFooter()}
       </Table>
+    )
+  }
+
+  renderTableHeader () {
+    return (
+      <Table.Header>
+        <Table.Row>
+          <Table.HeaderCell>Omschrijving</Table.HeaderCell>
+          <Table.HeaderCell>Aantal</Table.HeaderCell>
+          <Table.HeaderCell>Prijs</Table.HeaderCell>
+          <Table.HeaderCell>BTW %</Table.HeaderCell>
+          <Table.HeaderCell>Totaal</Table.HeaderCell>
+        </Table.Row>
+      </Table.Header>
+    )
+  }
+
+  renderTableBody () {
+    return (
+      <Table.Body>
+        { map(this.state.entries, this.renderTableEntry.bind(this))}
+      </Table.Body>
+    )
+  }
+
+  renderTableFooter () {
+    return (
+      <Table.Footer>
+        <Table.Row>
+          <Table.HeaderCell>
+            <Form.Input onChange={this.handleEntryChange.bind(this)} name='description' placeholder='Omschrijving' />
+          </Table.HeaderCell>
+          <Table.HeaderCell>
+            <Form.Input onChange={this.handleEntryChange.bind(this)} name='amount' placeholder='Aantal' />
+          </Table.HeaderCell>
+          <Table.HeaderCell>
+            <Form.Input onChange={this.handleEntryChange.bind(this)} name='price' placeholder='Prijs' />
+          </Table.HeaderCell>
+          <Table.HeaderCell>
+            <Form.Input onChange={this.handleEntryChange.bind(this)} name='tax' placeholder='BTW' />
+          </Table.HeaderCell>
+          <Table.HeaderCell textAlign='center'>
+            <Form onSubmit={this.handleEntrySubmit.bind(this)}>
+              <Button style={{'height': '50%'}} positive circular icon='plus square outline' />
+            </Form>
+          </Table.HeaderCell>
+        </Table.Row>
+      </Table.Footer>
     )
   }
 
@@ -87,20 +125,6 @@ class NewInvoice extends Component {
 
   calculatePrice (amount, price, tax) {
     return (parseInt(amount, 10) * parseInt(price, 10)) * (1 + (parseInt(tax, 10) / 100))
-  }
-
-  addRow () {
-    return (
-      <Form onSubmit={this.handleEntrySubmit.bind(this)}>
-        <Form.Group>
-          <Form.Input onChange={this.handleEntryChange.bind(this)} label='Omschrijving' name='description' placeholder='Omschrijving' width={4} />
-          <Form.Input onChange={this.handleEntryChange.bind(this)} label='Aantal' name='amount' placeholder='Aantal' width={4} />
-          <Form.Input onChange={this.handleEntryChange.bind(this)} label='Prijs' name='price' placeholder='Prijs' width={4} />
-          <Form.Input onChange={this.handleEntryChange.bind(this)} label='BTW' name='tax' placeholder='BTW' width={4} />
-          <Button style={{'height': '50%', 'marginTop': '1.6%'}} positive circular icon='plus square outline' />
-        </Form.Group>
-      </Form>
-    )
   }
 
   handleEntryChange (e, {name, value}) {
