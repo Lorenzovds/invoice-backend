@@ -194,7 +194,6 @@ class NewInvoice extends Component {
     return reduce(entries, (acc, entry) => {
       const { amount, price, tax } = entry
       const totalPrice = this.calculatePrice(amount, price, tax)
-      debugger
       acc += totalPrice
       return acc
     }, 0)
