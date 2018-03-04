@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
-import { Header, Form, Container, Table, Button } from 'semantic-ui-react'
-import { map } from 'lodash'
+import { withAuth } from '@okta/okta-react'
+import { Header, Form, Container, Table, Button, Message } from 'semantic-ui-react'
+import { map, cloneDeep, reduce, includes, every } from 'lodash'
 import '../../App.css'
 const taxOptions = [
   {
@@ -21,15 +22,37 @@ const taxOptions = [
   }
 ]
 
+const entryDefaults = {
+  description: '',
+  amount: '',
+  price: '',
+  tax: '21'
+}
+
+const headerDefaults = {
+  btw: '',
+  company: '',
+  expireDate: '',
+  invoiceDate: '',
+  invoiceNumber: '',
+  street: '',
+  town: ''
+}
+
+const numericalEntries = ['amount', 'price', 'tax']
+
 class NewInvoice extends Component {
   constructor (props) {
     super(props)
-    this.setActiveMenu = props.setActiveMenu
+    this.setActiveMenu = props.setActiveMenu.bind(this)
     this.state = {
-      headers: {},
-      entry: {},
-      entries: []
+      headers: cloneDeep(headerDefaults),
+      entry: cloneDeep(entryDefaults), // clone so we can clear them afterwards
+      entries: [],
+      saving: false
     }
+    this.auth = props.auth
+    this.postInvoice = props.postInvoice.bind(this)
   }
 
   componentWillMount () {
@@ -37,11 +60,24 @@ class NewInvoice extends Component {
   }
 
   render () {
+    const { errorMessage } = this.state
     return (
       <Container fluid>
         <Header as='h2'> Nieuwe factuur</Header>
         <div>{ this.headerForm() }</div>
         <div>{ this.renderTable() }</div>
+        {
+          errorMessage && (
+            <Message
+              negative>
+              <Message.Header>Oeps</Message.Header>
+              <Message.Content>{errorMessage}</Message.Content>
+            </Message>
+          )
+        }
+        <div>
+          <Button loading={this.state.saving}size='medium' floated='right' content='opslaan' positive onClick={() => this.saveInvoice()} />
+        </div>
       </Container>
     )
   }
@@ -94,28 +130,31 @@ class NewInvoice extends Component {
   }
 
   renderTableBody () {
+    const { entries } = this.state
     return (
       <Table.Body>
-        { map(this.state.entries, this.renderTableEntry.bind(this))}
+        { map(entries, this.renderTableEntry.bind(this))}
+        { this.renderTotalEntry(entries)}
       </Table.Body>
     )
   }
 
   renderTableFooter () {
+    const { description, amount, price, tax } = this.state.entry
     return (
       <Table.Footer>
         <Table.Row>
           <Table.HeaderCell>
-            <Form.Input onChange={this.handleEntryChange.bind(this)} name='description' placeholder='Omschrijving' />
+            <Form.Input onChange={this.handleEntryChange.bind(this)} name='description' placeholder='Omschrijving' value={description} />
           </Table.HeaderCell>
           <Table.HeaderCell>
-            <Form.Input onChange={this.handleEntryChange.bind(this)} name='amount' placeholder='Aantal' />
+            <Form.Input onChange={this.handleEntryChange.bind(this)} name='amount' placeholder='Aantal' value={amount} />
           </Table.HeaderCell>
           <Table.HeaderCell>
-            <Form.Input onChange={this.handleEntryChange.bind(this)} name='price' placeholder='Prijs' />
+            <Form.Input onChange={this.handleEntryChange.bind(this)} name='price' placeholder='Prijs' value={price} />
           </Table.HeaderCell>
           <Table.HeaderCell>
-            <Form.Dropdown onChange={this.handleEntryChange.bind(this)} name='tax' placeholder='BTW' value='21' options={taxOptions} />
+            <Form.Dropdown onChange={this.handleEntryChange.bind(this)} name='tax' placeholder='BTW' value={tax} options={taxOptions} />
           </Table.HeaderCell>
           <Table.HeaderCell textAlign='center'>
             <Form onSubmit={this.handleEntrySubmit.bind(this)}>
@@ -141,20 +180,78 @@ class NewInvoice extends Component {
     )
   }
 
+  renderTotalEntry (entries) {
+    return (
+      <Table.Row textAlign='right'>
+        <Table.Cell colSpan='5' positive style={{'fontSize': '150%', paddingTop: '20px', 'borderTop': '2px solid black'}}>
+          { this.getTotalAmount(entries)}
+        </Table.Cell>
+      </Table.Row>
+    )
+  }
+
+  getTotalAmount (entries) {
+    return reduce(entries, (acc, entry) => {
+      const { amount, price, tax } = entry
+      const totalPrice = this.calculatePrice(amount, price, tax)
+      acc += totalPrice
+      return acc
+    }, 0)
+  }
+
   calculatePrice (amount, price, tax) {
-    return (parseInt(amount, 10) * parseInt(price, 10)) * (1 + (parseInt(tax, 10) / 100))
+    return (parseFloat(amount, 10) * parseFloat(price, 10)) * (1 + (parseFloat(tax, 10) / 100))
   }
 
   handleEntryChange (e, {name, value}) {
-    const newHeaders = Object.assign(this.state.entry, { [name]: value })
-    this.setState({ headers: newHeaders })
+    const newEntry = Object.assign(this.state.entry, { [name]: value })
+    this.setState({ entry: newEntry })
   }
 
   handleEntrySubmit () {
+    this.setState({errorMessage: ''})
     const { entry, entries } = this.state
+    const validEntry = this.validateEntry(entry)
+    if (!validEntry) {
+      this.setState({errorMessage: 'zorg dat er cijfers worden ingevuld waar nodig'})
+      return
+    }
     entries.push(entry)
     this.setState({ entries })
+    this.setState({ entry: cloneDeep(entryDefaults) })
+  }
+
+  validateEntry (entry) {
+    return every(entry, (val, key) => {
+      if (!includes(numericalEntries, key)) return true
+      return !isNaN(parseFloat(val, 10))
+    })
+  }
+
+  validateHeaders () {
+    const { headers } = this.state
+    return every(headers, (val, key) => !!val)
+  }
+
+  saveInvoice () {
+    this.setState({
+      saving: true,
+      errorMessage: ''
+    })
+    const { entries, headers } = this.state
+    const isValid = this.validateHeaders()
+    if (!isValid) {
+      this.setState({
+        saving: false,
+        errorMessage: 'er ontbreken contact gegevens'
+      })
+      return
+    }
+    const body = Object.assign({}, {entries}, {headers})
+    this.postInvoice(body)
+      .then(() => this.setState({ saving: false }))
+      .catch(() => this.setState({ saving: false, errorMessage: 'kon niet opslaan, probeer later nog eens' }))
   }
 }
 
-export default NewInvoice
+export default withAuth(NewInvoice)

@@ -4,12 +4,15 @@ import '../App.css'
 import Invoice from '../components/invoice/invoice'
 import NewInvoice from '../components/invoice/new-invoice'
 import AllInvoices from '../components/invoice/all-invoices'
+import { withAuth } from '@okta/okta-react'
+import axios from 'axios'
 
 class InvoicesContainer extends Component {
   constructor (props) {
     super(props)
     Object.assign(this, props)
     this.setActiveMenu('all')
+    this.auth = props.auth
   }
   render () {
     return (
@@ -29,9 +32,19 @@ class InvoicesContainer extends Component {
 
   renderNewInvoice () {
     return (
-      <NewInvoice setActiveMenu={this.setActiveMenu} />
+      <NewInvoice setActiveMenu={this.setActiveMenu} postInvoice={this.postInvoice} />
     )
+  }
+
+  postInvoice (invoice) {
+    const { auth } = this
+    return auth.getAccessToken()
+      .then(accessToken => {
+        return axios.post('/invoices', invoice, {
+          headers: { accessToken }
+        })
+      })
   }
 }
 
-export default InvoicesContainer
+export default withAuth(InvoicesContainer)

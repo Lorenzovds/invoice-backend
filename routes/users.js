@@ -2,7 +2,7 @@ const express = require('express')
 const router = express.Router()
 const httpError = require('http-errors')
 
-const oktaClient = require('../lib/oktaClient')
+const oktaClient = require('../lib/oktaClient').client
 
 /**
  * Create a new user

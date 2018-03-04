@@ -1,61 +1,42 @@
 #!/usr/bin/env node
 
-/**
- * Module dependencies.
- */
-
 const app = require('../app')
 const http = require('http')
 const logger = require('../lib/logger')
+const db = require('../db')
 
 const { PORT = 3000 } = process.env
 
-/**
- * Get port from environment and store in Express.
- */
 app.set('port', PORT)
 
-/**
- * Create HTTP server.
- */
 const server = http.createServer(app)
 
-/**
- * Listen on provided port, on all network interfaces.
- */
-server.listen(PORT)
-server.on('error', onError)
-server.on('listening', onListening)
-server.on('close', onClose)
-
-process.on('SIGINT', onSigInt)
-
-/**
- * Event listener for HTTP server "error" event.
- */
+db.init()
+  .then(() => {
+    logger.debug('created datastores')
+    server.listen(PORT)
+    server.on('error', onError)
+    server.on('listening', onListening)
+    server.on('close', onClose)
+    process.on('SIGINT', onSigInt)
+  })
+  .catch(err => {
+    logger.error(err)
+  })
 
 function onError (error) {
   logger.error(`Server error => ${error}`)
   process.exit(1)
 }
 
-/**
- * Event listener for HTTP server "listening" event.
- */
 function onListening () {
   logger.debug(`Listening on ${PORT}`)
 }
 
-/**
- * Event listener for HTTP server "close" event.
- */
 function onClose () {
   logger.info('Stopping ...')
 }
 
-/**
- * Event listener for HTTP server "SIGINT" event.
- */
 function onSigInt () {
   logger.info('Caught SIGINT, stopping gracefully')
   server.close()
