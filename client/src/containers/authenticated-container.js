@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { Route, Switch, Redirect } from 'react-router'
 import { Link } from 'react-router-dom'
 import InvoicesContainer from './invoices-container'
-import {Header,
+import {Header, Grid,
   Segment, Menu, Icon } from 'semantic-ui-react'
 import { withAuth } from '@okta/okta-react'
 
@@ -39,44 +39,50 @@ class AuthenticatedContainer extends Component {
     const { activeItem } = this.state
     return (
       <Menu
-        size='large'
+        size='huge'
         vertical
         inverted
+        borderless
         floated
-        width='thin'>
-        <Menu.Item
-          as={Link}
-          name='home'
-          onClick={this.handleMenuClick.bind(this)}
-          active={activeItem === 'home'}
-          to='/'>
-          <Icon name={'home'} />
-          Home
-        </Menu.Item>
-        <Menu.Item
-          name='all'
-          as={Link}
-          onClick={this.handleMenuClick.bind(this)}
-          to='/invoices'
-          active={activeItem === 'all'}>
-          <Icon name='list layout' />
-          All
-        </Menu.Item>
-        <Menu.Item
-          name='new'
-          as={Link}
-          onClick={this.handleMenuClick.bind(this)}
-          to='/invoices/new'
-          active={activeItem === 'new'}>
-          <Icon name='plus square outline' />
-          New
-        </Menu.Item>
-        <Menu.Item
-          name='logout'
-          onClick={this.auth.logout}>
-          <Icon name='key' />
-          Logout
-        </Menu.Item>
+        pointing
+        style={{'minHeight': '100%'}}>
+        <Grid verticalAlign='middle' textAlign='center' style={{width: 'auto', height: '100%'}}>
+          <Grid.Column verticalAlign='middle'>
+            <Menu.Item
+              as={Link}
+              name='home'
+              onClick={this.handleMenuClick.bind(this)}
+              active={activeItem === 'home'}
+              to='/'>
+              <Icon name={'home'} />
+              Home
+            </Menu.Item>
+            <Menu.Item
+              name='all'
+              as={Link}
+              onClick={this.handleMenuClick.bind(this)}
+              to='/invoices'
+              active={activeItem === 'all'}>
+              <Icon name='list layout' />
+              All
+            </Menu.Item>
+            <Menu.Item
+              name='new'
+              as={Link}
+              onClick={this.handleMenuClick.bind(this)}
+              to='/invoices/new'
+              active={activeItem === 'new'}>
+              <Icon name='plus square outline' />
+              New
+            </Menu.Item>
+            <Menu.Item
+              name='logout'
+              onClick={this.auth.logout}>
+              <Icon name='key' />
+              Logout
+            </Menu.Item>
+          </Grid.Column>
+        </Grid>
       </Menu>
     )
   }

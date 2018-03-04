@@ -2,6 +2,24 @@ import React, { Component } from 'react'
 import { Header, Form, Container, Table, Button } from 'semantic-ui-react'
 import { map } from 'lodash'
 import '../../App.css'
+const taxOptions = [
+  {
+    text: '0',
+    value: '0'
+  },
+  {
+    text: '6',
+    value: '6'
+  },
+  {
+    text: '12',
+    value: '12'
+  },
+  {
+    text: '21',
+    value: '21'
+  }
+]
 
 class NewInvoice extends Component {
   constructor (props) {
@@ -97,7 +115,7 @@ class NewInvoice extends Component {
             <Form.Input onChange={this.handleEntryChange.bind(this)} name='price' placeholder='Prijs' />
           </Table.HeaderCell>
           <Table.HeaderCell>
-            <Form.Input onChange={this.handleEntryChange.bind(this)} name='tax' placeholder='BTW' />
+            <Form.Dropdown onChange={this.handleEntryChange.bind(this)} name='tax' placeholder='BTW' value='21' options={taxOptions} />
           </Table.HeaderCell>
           <Table.HeaderCell textAlign='center'>
             <Form onSubmit={this.handleEntrySubmit.bind(this)}>
