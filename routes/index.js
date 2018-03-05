@@ -21,7 +21,11 @@ router.use('/users', verifyRequest, userRouter)
 function verifyRequest (req, res, next) {
   const accessToken = req.get('accessToken')
   verify(accessToken)
-    .then(() => next())
+    .then(claim => {
+      // add user object to the request for future use
+      req.user = _.pick(claim.claims, ['uid', 'sub'])
+      next()
+    })
     .catch(err => {
       logger.error(err)
       next(httpError(401))

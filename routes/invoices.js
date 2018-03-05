@@ -15,7 +15,8 @@ router.get('/', (req, res, next) => {
 })
 
 router.post('/', (req, res, next) => {
-  const { body } = req
+  const { body, user } = req
+  Object.assign(body, { user })
   db.insert('invoices', body)
     .then(() => {
       res.send(body).status(200)
