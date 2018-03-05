@@ -32,7 +32,7 @@ class InvoicesContainer extends Component {
 
   renderNewInvoice () {
     return (
-      <NewInvoice setActiveMenu={this.setActiveMenu} postInvoice={this.postInvoice} />
+      <NewInvoice setActiveMenu={this.setActiveMenu} postInvoice={this.postInvoice.bind(this)} />
     )
   }
 

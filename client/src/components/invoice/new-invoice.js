@@ -1,5 +1,4 @@
 import React, { Component } from 'react'
-import { withAuth } from '@okta/okta-react'
 import { Header, Form, Container, Table, Button, Message } from 'semantic-ui-react'
 import { map, cloneDeep, reduce, includes, every } from 'lodash'
 import '../../App.css'
@@ -51,7 +50,6 @@ class NewInvoice extends Component {
       entries: [],
       saving: false
     }
-    this.auth = props.auth
     this.postInvoice = props.postInvoice.bind(this)
   }
 
@@ -254,4 +252,4 @@ class NewInvoice extends Component {
   }
 }
 
-export default withAuth(NewInvoice)
+export default NewInvoice
