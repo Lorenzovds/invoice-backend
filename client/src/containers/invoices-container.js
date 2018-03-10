@@ -26,7 +26,7 @@ class InvoicesContainer extends Component {
 
   renderAllInvoices () {
     return (
-      <AllInvoices setActiveMenu={this.setActiveMenu} />
+      <AllInvoices setActiveMenu={this.setActiveMenu} getAllInvoices={this.getAllInvoices.bind(this)} />
     )
   }
 
@@ -41,6 +41,16 @@ class InvoicesContainer extends Component {
     return auth.getAccessToken()
       .then(accessToken => {
         return axios.post('/invoices', invoice, {
+          headers: { accessToken }
+        })
+      })
+  }
+
+  getAllInvoices () {
+    const { auth } = this
+    return auth.getAccessToken()
+      .then(accessToken => {
+        return axios.get('/invoices', {
           headers: { accessToken }
         })
       })

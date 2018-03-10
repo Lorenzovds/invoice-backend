@@ -23,8 +23,20 @@ function insert (name, doc) {
   return new Promise((resolve, reject) => {
     const store = storeMap[name]
     if (!store || !doc) return reject(new Error('no such store or empty doc'))
+    const date = Date.now()
+    Object.assign(doc, { date })
     store.insert(doc, (err, newDocs) => {
       err ? reject(err) : resolve(newDocs)
+    })
+  })
+}
+
+function getAll (name, user) {
+  return new Promise((resolve, reject) => {
+    const store = storeMap[name]
+    if (!store) return reject(new Error('no such store'))
+    store.find({ user: user }, (err, docs) => {
+      err ? reject(err) : resolve(docs)
     })
   })
 }
@@ -36,5 +48,6 @@ function get (name) {
 module.exports = {
   init,
   get,
-  insert
+  insert,
+  all: getAll
 }

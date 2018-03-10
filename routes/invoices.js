@@ -1,17 +1,15 @@
 'use strict'
 
 const router = require('express').Router()
-const httpError = require('http-errors')
 const db = require('../db')
 
 router.get('/', (req, res, next) => {
-  const test = [{
-    name: 'foo'
-  },
-  {
-    name: 'bar'
-  }]
-  res.send(test)
+  const { user } = req
+  db.all('invoices', user)
+    .then(invoices => {
+      res.status(200).send(invoices)
+    })
+    .catch(next)
 })
 
 router.post('/', (req, res, next) => {
@@ -21,7 +19,7 @@ router.post('/', (req, res, next) => {
     .then(() => {
       res.send(body).status(200)
     })
-    .catch(err => next(httpError(400, err)))
+    .catch(next)
 })
 
 module.exports = router
