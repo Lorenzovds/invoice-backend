@@ -19,7 +19,8 @@ class InvoicesContainer extends Component {
       <Switch>
         <Route exact path='/invoices' render={() => this.renderAllInvoices()} />
         <Route exact path='/invoices/new' render={() => this.renderNewInvoice()} />
-        <Route exact path='/invoices/:id' component={Invoice} />
+        <Route exact path='/invoices/:id' render={() => this.renderEditInvoice()} />
+        <Route exact path='/invoices/:id/view' component={Invoice} />
       </Switch>
     )
   }
@@ -36,6 +37,12 @@ class InvoicesContainer extends Component {
     )
   }
 
+  renderEditInvoice () {
+    return (
+      <NewInvoice setActiveMenu={this.setActiveMenu} updateInvoice={this.updateInvoice.bind(this)} getInvoice={this.getInvoice.bind(this)} />
+    )
+  }
+
   postInvoice (invoice) {
     const { auth } = this
     return auth.getAccessToken()
@@ -46,11 +53,31 @@ class InvoicesContainer extends Component {
       })
   }
 
+  updateInvoice (invoice, id) {
+    const { auth } = this
+    return auth.getAccessToken()
+      .then(accessToken => {
+        return axios.put(`/invoices/${id}`, invoice, {
+          headers: { accessToken }
+        })
+      })
+  }
+
   getAllInvoices () {
     const { auth } = this
     return auth.getAccessToken()
       .then(accessToken => {
         return axios.get('/invoices', {
+          headers: { accessToken }
+        })
+      })
+  }
+
+  getInvoice (id) {
+    const { auth } = this
+    return auth.getAccessToken()
+      .then(accessToken => {
+        return axios.get(`/invoices/${id}`, {
           headers: { accessToken }
         })
       })

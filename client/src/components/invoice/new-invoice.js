@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
-import { Header, Form, Container, Table, Button, Message } from 'semantic-ui-react'
+import { withRouter } from 'react-router'
+import { Header, Form, Loader, Table, Button, Message, Container } from 'semantic-ui-react'
 import { map, cloneDeep, reduce, includes, every } from 'lodash'
 import '../../App.css'
 const taxOptions = [
@@ -43,25 +44,68 @@ const numericalEntries = ['amount', 'price', 'tax']
 class NewInvoice extends Component {
   constructor (props) {
     super(props)
-    this.setActiveMenu = props.setActiveMenu.bind(this)
+    this.setActiveMenu = props.setActiveMenu
+    this.props = props
     this.state = {
       headers: cloneDeep(headerDefaults),
       entry: cloneDeep(entryDefaults), // clone so we can clear them afterwards
       entries: [],
-      saving: false
+      saving: false,
+      loading: true
     }
-    this.postInvoice = props.postInvoice.bind(this)
+    this.postInvoice = props.postInvoice
+    this.getInvoice = props.getInvoice
+    this.updateInvoice = props.updateInvoice
   }
 
   componentWillMount () {
     this.setActiveMenu('new')
   }
 
+  componentWillReceiveProps () {
+    this.clearFields()
+  }
+
+  componentDidMount () {
+    const { match } = this.props
+    const { params } = match
+    const { id } = params
+
+    if (!id) return this.setState({ loading: false })
+    this.setState({ edit: true, id })
+    this.getInvoice(id)
+      .then(invoice => {
+        const { data } = invoice
+        const { entries, headers } = data
+        this.setState({
+          entries,
+          headers,
+          loading: false
+        })
+      })
+      .catch(() => {
+        this.setState({loading: false})
+        this.setState({loadingError: 'Could not load invoice'})
+      })
+  }
+
+  clearFields () {
+    this.setState({
+      headers: cloneDeep(headerDefaults), // clone so we can clear them afterwards
+      entry: cloneDeep(entryDefaults), // clone so we can clear them afterwards
+      entries: [],
+      saving: false,
+      loading: false,
+      edit: false
+    })
+  }
+
   render () {
-    const { errorMessage } = this.state
+    const { errorMessage, loading, edit } = this.state
     return (
       <Container fluid>
-        <Header as='h2'> Nieuwe factuur</Header>
+        <Loader active={loading} size='medium'>Factuur inladen</Loader>
+        <Header as='h2'> {edit ? 'Factuur aanpassen' : 'Nieuwe factuur'}</Header>
         <div>{ this.headerForm() }</div>
         <div>{ this.renderTable() }</div>
         {
@@ -74,25 +118,27 @@ class NewInvoice extends Component {
           )
         }
         <div>
-          <Button loading={this.state.saving}size='medium' floated='right' content='opslaan' positive onClick={() => this.saveInvoice()} />
+          <Button disabled={loading} loading={this.state.saving}size='medium' floated='right' content={edit ? 'aanpassen' : 'nieuw'} positive onClick={() => this.saveInvoice()} />
         </div>
       </Container>
     )
   }
 
   headerForm () {
+    const { headers } = this.state
+    const { company, street, town, btw, invoiceNumber, invoiceDate, expireDate } = headers
     return (
       <Form>
         <Form.Group>
-          <Form.Input onChange={this.handleHeaderChange.bind(this)} label='Bedrijfsnaam' name='company' placeholder='Bedrijfsnaam' required width={4} />
-          <Form.Input onChange={this.handleHeaderChange.bind(this)} label='Straat' name='street' placeholder='Straat' required width={4} />
-          <Form.Input onChange={this.handleHeaderChange.bind(this)} label='Gemeente' name='town' placeholder='Gemeente' required width={4} />
+          <Form.Input onChange={this.handleHeaderChange.bind(this)} label='Bedrijfsnaam' name='company' placeholder='Bedrijfsnaam' value={company} required width={4} />
+          <Form.Input onChange={this.handleHeaderChange.bind(this)} label='Straat' name='street' placeholder='Straat' value={street} required width={4} />
+          <Form.Input onChange={this.handleHeaderChange.bind(this)} label='Gemeente' name='town' placeholder='Gemeente' value={town} required width={4} />
         </Form.Group>
         <Form.Group>
-          <Form.Input onChange={this.handleHeaderChange.bind(this)} label='BTW-nummer' name='btw' placeholder='BTW-nummer' required width={4} />
-          <Form.Input onChange={this.handleHeaderChange.bind(this)} label='Factuurnummer' name='invoiceNumber' placeholder='Factuurnummer' required width={4} />
-          <Form.Input onChange={this.handleHeaderChange.bind(this)} label='Factuurdatum' name='invoiceDate' placeholder='Factuurdatum' required width={4} />
-          <Form.Input onChange={this.handleHeaderChange.bind(this)} label='Vervaldag' name='expireDate' placeholder='Vervaldag' required width={4} />
+          <Form.Input onChange={this.handleHeaderChange.bind(this)} label='BTW-nummer' name='btw' placeholder='BTW-nummer' value={btw} required width={4} />
+          <Form.Input onChange={this.handleHeaderChange.bind(this)} label='Factuurnummer' name='invoiceNumber' placeholder='Factuurnummer' value={invoiceNumber} required width={4} />
+          <Form.Input onChange={this.handleHeaderChange.bind(this)} label='Factuurdatum' name='invoiceDate' placeholder='Factuurdatum' value={invoiceDate} required width={4} />
+          <Form.Input onChange={this.handleHeaderChange.bind(this)} label='Vervaldag' name='expireDate' placeholder='Vervaldag' value={expireDate} required width={4} />
         </Form.Group>
       </Form>
     )
@@ -138,7 +184,8 @@ class NewInvoice extends Component {
   }
 
   renderTableFooter () {
-    const { description, amount, price, tax } = this.state.entry
+    const { entry, loading } = this.state
+    const { description, amount, price, tax } = entry
     return (
       <Table.Footer>
         <Table.Row>
@@ -156,7 +203,7 @@ class NewInvoice extends Component {
           </Table.HeaderCell>
           <Table.HeaderCell textAlign='center'>
             <Form onSubmit={this.handleEntrySubmit.bind(this)}>
-              <Button style={{'height': '50%'}} positive circular icon='plus square outline' />
+              <Button disabled={loading} style={{'height': '50%'}} positive circular icon='plus square outline' />
             </Form>
           </Table.HeaderCell>
         </Table.Row>
@@ -232,6 +279,7 @@ class NewInvoice extends Component {
   }
 
   saveInvoice () {
+    const { edit, id } = this.state
     this.setState({
       saving: true,
       errorMessage: ''
@@ -246,10 +294,12 @@ class NewInvoice extends Component {
       return
     }
     const body = Object.assign({}, {entries}, {headers})
-    this.postInvoice(body)
+    const savePromise = edit ? this.updateInvoice(body, id) : this.postInvoice(body)
+
+    savePromise
       .then(() => this.setState({ saving: false }))
       .catch(() => this.setState({ saving: false, errorMessage: 'kon niet opslaan, probeer later nog eens' }))
   }
 }
 
-export default NewInvoice
+export default withRouter(NewInvoice)

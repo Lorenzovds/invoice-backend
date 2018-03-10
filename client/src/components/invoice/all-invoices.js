@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
-import { Table, Icon } from 'semantic-ui-react'
+import { Table, Button, Segment } from 'semantic-ui-react'
+import { Link } from 'react-router-dom'
 import { map } from 'lodash'
 import '../../App.css'
 
@@ -17,7 +18,7 @@ class AllInvoices extends Component {
     this.getAllInvoices()
       .then(res => {
         const { data } = res
-        this.setState({ invoices: data })
+        this.setState({ invoices: data, loading: false })
       })
       .catch(() => {
         this.setState({ loading: false, errorMessage: 'Could not load invoices' })
@@ -25,9 +26,9 @@ class AllInvoices extends Component {
   }
   render () {
     return (
-      <div>
+      <Segment loading={this.state.loading}>
         { this.renderInvoiceTable() }
-      </div>
+      </Segment>
     )
   }
 
@@ -54,12 +55,15 @@ class AllInvoices extends Component {
   }
 
   renderInvoiceEntry (invoice, index) {
-    const { headers, date } = invoice
+    const { headers, date, _id } = invoice
     const { company, town, street, invoiceNumber } = headers
     return (
       <Table.Row key={index}>
         <Table.Cell>
-          <Icon name='bookmark outline' /> { company } - { invoiceNumber }
+          <Link to={`invoices/${_id}`}>
+            <Button circular icon='pencil' />
+          </Link>
+          { company } - { invoiceNumber }
         </Table.Cell>
         <Table.Cell>{ town } - { street }</Table.Cell>
         <Table.Cell textAlign='right'> { new Date(date).toLocaleDateString() }</Table.Cell>

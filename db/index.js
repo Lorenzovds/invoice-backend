@@ -41,13 +41,32 @@ function getAll (name, user) {
   })
 }
 
-function get (name) {
-  return storeMap[name]
+function update (name, user, id, doc) {
+  return new Promise((resolve, reject) => {
+    const store = storeMap[name]
+    if (!store || !doc) return reject(new Error('no such store or empty doc'))
+    const date = Date.now()
+    Object.assign(doc, { date })
+    store.update({ user: user, _id: id }, doc, {}, (err, newDocs) => {
+      err ? reject(err) : resolve(newDocs)
+    })
+  })
+}
+
+function get (name, user, id) {
+  return new Promise((resolve, reject) => {
+    const store = storeMap[name]
+    if (!store) return reject(new Error('no such store'))
+    store.findOne({ user: user, _id: id }, (err, doc) => {
+      err ? reject(err) : resolve(doc)
+    })
+  })
 }
 
 module.exports = {
   init,
   get,
   insert,
-  all: getAll
+  all: getAll,
+  update
 }
