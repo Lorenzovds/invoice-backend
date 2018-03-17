@@ -62,12 +62,9 @@ class NewInvoice extends Component {
     this.setActiveMenu('new')
   }
 
-  componentWillReceiveProps () {
+  componentWillReceiveProps (props) {
     this.clearFields()
-  }
-
-  componentDidMount () {
-    const { match } = this.props
+    const { match } = props
     const { params } = match
     const { id } = params
 
