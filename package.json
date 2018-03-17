@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "start": "nodemon ./bin/www",
+    "start": "node ./bin/www",
     "precommit": "standard --verbose | snazzy",
     "client": "cd client && yarn start",
     "server": "yarn start",
