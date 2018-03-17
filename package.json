@@ -12,7 +12,10 @@
   "standard": {
     "env": {
       "jest": true
-    }
+    },
+    "ignore": [
+      "/client/build"
+    ]
   },
   "dependencies": {
     "@okta/jwt-verifier": "^0.0.11",

@@ -2,6 +2,7 @@ const express = require('express')
 const cookieParser = require('cookie-parser')
 const bodyParser = require('body-parser')
 const httpError = require('http-errors')
+const path = require('path')
 
 const router = require('./routes')
 const logger = require('./lib/logger')
@@ -22,7 +23,13 @@ app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(cookieParser())
 
-app.use('/', router)
+app.use('/', express.static(`${__dirname}/client/build`))
+
+app.use('/api', router)
+
+app.get('*', (req, res) => {
+  res.sendFile(path.join(`${__dirname}/client/build/index.html`))
+})
 
 // catch 404 and forward to error handler
 app.use((req, res, next) => {

@@ -53,7 +53,7 @@ class InvoicesContainer extends Component {
     const { auth } = this
     return auth.getAccessToken()
       .then(accessToken => {
-        return axios.post('/invoices', invoice, {
+        return axios.post('/api/invoices', invoice, {
           headers: { accessToken }
         })
       })
@@ -63,7 +63,7 @@ class InvoicesContainer extends Component {
     const { auth } = this
     return auth.getAccessToken()
       .then(accessToken => {
-        return axios.put(`/invoices/${id}`, invoice, {
+        return axios.put(`/api/invoices/${id}`, invoice, {
           headers: { accessToken }
         })
       })
@@ -73,7 +73,7 @@ class InvoicesContainer extends Component {
     const { auth } = this
     return auth.getAccessToken()
       .then(accessToken => {
-        return axios.get('/invoices', {
+        return axios.get('/api/invoices', {
           headers: { accessToken }
         })
       })
@@ -83,7 +83,7 @@ class InvoicesContainer extends Component {
     const { auth } = this
     return auth.getAccessToken()
       .then(accessToken => {
-        return axios.get(`/invoices/${id}`, {
+        return axios.get(`/api/invoices/${id}`, {
           headers: { accessToken }
         })
       })

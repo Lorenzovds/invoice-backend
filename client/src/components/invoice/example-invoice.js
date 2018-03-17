@@ -188,8 +188,9 @@ class ExampleInvoice extends Component {
 
   renderTotalEntry (entries) {
     return (
-      <Table.Row textAlign='right'>
-        <Table.Cell colSpan='5' positive style={{'fontSize': '150%', paddingTop: '20px', 'borderTop': '2px solid black'}}>
+      <Table.Row textAlign='right' positive style={{paddingTop: '20px', 'borderTop': '2px solid black'}}>
+        <Table.Cell>Totaal</Table.Cell>
+        <Table.Cell colSpan='4'>
           { this.getTotalAmount(entries).toFixed(2)}
         </Table.Cell>
       </Table.Row>

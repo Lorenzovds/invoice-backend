@@ -3,17 +3,11 @@
 const router = require('express').Router()
 const _ = require('lodash')
 
-const pkg = require('../package.json')
 const invoiceRouter = require('./invoices')
 const userRouter = require('./users')
 const { verify } = require('../lib/oktaClient')
 const logger = require('../lib/logger')
 const httpError = require('http-errors')
-
-router.get('/', function (req, res, next) {
-  const cleanedPkg = _.pick(pkg, ['version', 'name'])
-  res.send(cleanedPkg)
-})
 
 router.use('/invoices', verifyRequest, invoiceRouter)
 router.use('/users', verifyRequest, userRouter)
