@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { Segment, Image, Dropdown, Container, Button, Table, Header } from 'semantic-ui-react'
 import domtoimage from 'dom-to-image'
+import JsPdf from 'jspdf'
 import { map, find, reduce } from 'lodash'
 import '../../App.css'
 
@@ -44,12 +45,12 @@ class ExampleInvoice extends Component {
           <Dropdown selection onChange={this.handleDropdownChange.bind(this)} options={dropdownOptions} />
           <Button content='Download' disabled={!selectedInvoice} primary onClick={this.handleExport.bind(this)} />
         </Container>
-        <div ref={(input) => { this.invoiceDOM = input }}>
-          <Container style={{ padding: '50px' }}>
+        <Container style={{ minWidth: '595.28px', width: '595.28px', height: 'auto' }}>
+          <div style={{ paddingTop: '40px' }} ref={(input) => { this.invoiceDOM = input }} >
             { this.renderInvoiceHeader() }
             { this.renderInvoiceTable() }
-          </Container>
-        </div>
+          </div>
+        </Container>
       </Segment>
     )
   }
@@ -65,12 +66,16 @@ class ExampleInvoice extends Component {
     const { selectedInvoice } = state
     const { headers } = selectedInvoice
     const { company, invoiceNumber } = headers
-    domtoimage.toJpeg(invoiceDOM, { bgcolor: 'white', quality: 0.95 })
+    domtoimage.toPng(invoiceDOM)
       .then(function (dataUrl) {
-        var link = document.createElement('a')
-        link.download = `Factuur_${company}_${invoiceNumber}`
-        link.href = dataUrl
-        link.click()
+        const doc = new JsPdf('p', 'pt', 'a4')
+        const width = invoiceDOM.clientWidth
+        const height = invoiceDOM.clientHeight
+        doc.addImage(dataUrl, 'PNG', 0, 0, width, height)
+        doc.save(`Factuur_${company}_${invoiceNumber}`)
+      })
+      .catch(function (error) {
+        console.error('oops, something went wrong!', error)
       })
   }
 
@@ -85,14 +90,14 @@ class ExampleInvoice extends Component {
           <Container style={{width: 'auto', height: 'auto'}}>
             <Image src='/test-logo.png' size='small' />
           </Container>
-          <Container text style={{width: 'auto', height: 'auto'}}>
+          <Container style={{width: 'auto', height: 'auto'}}>
             <p>Van Doorselaere Kevin</p>
             <p>Bieststraat 68</p>
             <p>9270 Kalken</p>
             <p>Tel: 0497 35 77 98</p>
             <p>E-mail: Kevin_van_Doorsselaere@hotmail.com</p>
           </Container>
-          <Container text style={{width: 'auto', height: 'auto'}}>
+          <Container style={{width: 'auto', height: 'auto'}}>
             <p>BTWnr: BE  0690.876.560</p>
             <p>IBAN: BE67 0018 3341 5487</p>
             <p>BIC: GEBABEBB</p>
@@ -102,7 +107,7 @@ class ExampleInvoice extends Component {
           <Header as='h3'>Klantinfo</Header>
         </Container>
         <Container style={{display: 'inline-flex', paddingLeft: '30px', paddingTop: '30px'}} textAlign='left'>
-          <Container text style={{width: 'auto'}}>
+          <Container style={{width: 'auto'}}>
             <p>{company}</p>
             <p>{street}</p>
             <p>{town}</p>
@@ -134,10 +139,12 @@ class ExampleInvoice extends Component {
     const { selectedInvoice } = this.state
     if (!selectedInvoice) return null
     return (
-      <Table celled style={{marginBottom: '30px'}}>
-        {this.renderTableHeader()}
-        {this.renderTableBody()}
-      </Table>
+      <div style={{ margin: '10px' }}>
+        <Table celled>
+          {this.renderTableHeader()}
+          {this.renderTableBody()}
+        </Table>
+      </div>
     )
   }
 
