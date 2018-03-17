@@ -7,7 +7,8 @@
     "precommit": "standard --verbose | snazzy",
     "client": "cd client && yarn start",
     "server": "yarn start",
-    "dev": "concurrently --kill-others-on-fail \"yarn server\" \"yarn client\""
+    "dev": "concurrently --kill-others-on-fail \"yarn server\" \"yarn client\"",
+    "heroku-postbuild": "cd client && yarn --production=false && yarn run build"
   },
   "standard": {
     "env": {
