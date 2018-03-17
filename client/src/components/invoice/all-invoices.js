@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { Table, Button, Segment } from 'semantic-ui-react'
 import { Link } from 'react-router-dom'
-import { map } from 'lodash'
+import { map, orderBy } from 'lodash'
 import '../../App.css'
 
 class AllInvoices extends Component {
@@ -18,7 +18,8 @@ class AllInvoices extends Component {
     this.getAllInvoices()
       .then(res => {
         const { data } = res
-        this.setState({ invoices: data, loading: false })
+        const sortedInvoices = orderBy(data, ['date'], ['desc'])
+        this.setState({ invoices: sortedInvoices, loading: false })
       })
       .catch(() => {
         this.setState({ loading: false, errorMessage: 'Could not load invoices' })
@@ -26,7 +27,7 @@ class AllInvoices extends Component {
   }
   render () {
     return (
-      <Segment loading={this.state.loading}>
+      <Segment basic loading={this.state.loading}>
         { this.renderInvoiceTable() }
       </Segment>
     )

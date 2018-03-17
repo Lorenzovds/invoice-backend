@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { withRouter } from 'react-router'
-import { Header, Form, Loader, Table, Button, Message, Container } from 'semantic-ui-react'
+import { Header, Form, Loader, Table, Button, Message, Segment } from 'semantic-ui-react'
 import { map, cloneDeep, reduce, includes, every } from 'lodash'
 import '../../App.css'
 const taxOptions = [
@@ -82,7 +82,7 @@ class NewInvoice extends Component {
       })
       .catch(() => {
         this.setState({loading: false})
-        this.setState({loadingError: 'Could not load invoice'})
+        this.setState({loadingError: 'Kon factuur niet inladen'})
       })
   }
 
@@ -98,26 +98,26 @@ class NewInvoice extends Component {
   }
 
   render () {
-    const { errorMessage, loading, edit } = this.state
+    const { errorMessage, loading, edit, loadingError } = this.state
     return (
-      <Container fluid>
+      <Segment basic>
         <Loader active={loading} size='medium'>Factuur inladen</Loader>
         <Header as='h2'> {edit ? 'Factuur aanpassen' : 'Nieuwe factuur'}</Header>
         <div>{ this.headerForm() }</div>
         <div>{ this.renderTable() }</div>
         {
-          errorMessage && (
+          (errorMessage || loadingError) && (
             <Message
               negative>
               <Message.Header>Oeps</Message.Header>
-              <Message.Content>{errorMessage}</Message.Content>
+              <Message.Content>{errorMessage || loadingError}</Message.Content>
             </Message>
           )
         }
         <div>
-          <Button disabled={loading} loading={this.state.saving}size='medium' floated='right' content={edit ? 'aanpassen' : 'nieuw'} positive onClick={() => this.saveInvoice()} />
+          <Button disabled={loading || loadingError} loading={this.state.saving}size='medium' floated='right' content={edit ? 'aanpassen' : 'nieuw'} positive onClick={() => this.saveInvoice()} />
         </div>
-      </Container>
+      </Segment>
     )
   }
 
@@ -226,7 +226,7 @@ class NewInvoice extends Component {
     return (
       <Table.Row textAlign='right'>
         <Table.Cell colSpan='5' positive style={{'fontSize': '150%', paddingTop: '20px', 'borderTop': '2px solid black'}}>
-          { this.getTotalAmount(entries)}
+          { this.getTotalAmount(entries).toFixed(2)}
         </Table.Cell>
       </Table.Row>
     )

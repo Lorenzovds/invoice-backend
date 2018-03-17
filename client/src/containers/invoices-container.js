@@ -1,9 +1,9 @@
 import React, { Component } from 'react'
 import { Route, Switch } from 'react-router'
 import '../App.css'
-import Invoice from '../components/invoice/invoice'
 import NewInvoice from '../components/invoice/new-invoice'
 import AllInvoices from '../components/invoice/all-invoices'
+import ExampleInvoice from '../components/invoice/example-invoice'
 import { withAuth } from '@okta/okta-react'
 import axios from 'axios'
 
@@ -19,8 +19,8 @@ class InvoicesContainer extends Component {
       <Switch>
         <Route exact path='/invoices' render={() => this.renderAllInvoices()} />
         <Route exact path='/invoices/new' render={() => this.renderNewInvoice()} />
+        <Route exact path='/invoices/clean' render={() => this.renderExampleInvoices()} />
         <Route exact path='/invoices/:id' render={() => this.renderEditInvoice()} />
-        <Route exact path='/invoices/:id/view' component={Invoice} />
       </Switch>
     )
   }
@@ -28,6 +28,12 @@ class InvoicesContainer extends Component {
   renderAllInvoices () {
     return (
       <AllInvoices setActiveMenu={this.setActiveMenu} getAllInvoices={this.getAllInvoices.bind(this)} />
+    )
+  }
+
+  renderExampleInvoices () {
+    return (
+      <ExampleInvoice setActiveMenu={this.setActiveMenu} getAllInvoices={this.getAllInvoices.bind(this)} />
     )
   }
 

@@ -49,22 +49,13 @@ class AuthenticatedContainer extends Component {
         <Grid verticalAlign='middle' textAlign='center' style={{width: 'auto', height: '100%'}}>
           <Grid.Column verticalAlign='middle'>
             <Menu.Item
-              as={Link}
-              name='home'
-              onClick={this.handleMenuClick.bind(this)}
-              active={activeItem === 'home'}
-              to='/'>
-              <Icon name={'home'} />
-              Home
-            </Menu.Item>
-            <Menu.Item
               name='all'
               as={Link}
               onClick={this.handleMenuClick.bind(this)}
               to='/invoices'
               active={activeItem === 'all'}>
               <Icon name='list layout' />
-              All
+              Alle facturen
             </Menu.Item>
             <Menu.Item
               name='new'
@@ -73,13 +64,22 @@ class AuthenticatedContainer extends Component {
               to='/invoices/new'
               active={activeItem === 'new'}>
               <Icon name='plus square outline' />
-              New
+              Nieuw / aanpassen
+            </Menu.Item>
+            <Menu.Item
+              name='clean'
+              as={Link}
+              onClick={this.handleMenuClick.bind(this)}
+              to='/invoices/clean'
+              active={activeItem === 'clean'}>
+              <Icon name='download' />
+              Downloaden
             </Menu.Item>
             <Menu.Item
               name='logout'
               onClick={this.auth.logout}>
               <Icon name='key' />
-              Logout
+              Uitloggen
             </Menu.Item>
           </Grid.Column>
         </Grid>
