@@ -38,7 +38,8 @@ class AllInvoices extends Component {
       <Table celled striped>
         <Table.Header>
           <Table.Row>
-            <Table.HeaderCell colSpan='3'>Alle facturen</Table.HeaderCell>
+            <Table.HeaderCell colSpan='2'>Alle facturen</Table.HeaderCell>
+            <Table.HeaderCell textAlign={'right'}>Aangemaakt op</Table.HeaderCell>
           </Table.Row>
         </Table.Header>
         { this.renderInvoices() }

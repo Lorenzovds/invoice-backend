@@ -2,6 +2,9 @@ import React, { Component } from 'react'
 import { withRouter } from 'react-router'
 import { Header, Form, Loader, Table, Button, Message, Segment } from 'semantic-ui-react'
 import { map, cloneDeep, reduce, includes, every } from 'lodash'
+import moment from 'moment'
+import DatePicker from 'react-datepicker'
+import 'react-datepicker/dist/react-datepicker.css'
 import '../../App.css'
 const taxOptions = [
   {
@@ -32,8 +35,8 @@ const entryDefaults = {
 const headerDefaults = {
   btw: '',
   company: '',
-  expireDate: '',
-  invoiceDate: '',
+  expireDate: moment(),
+  invoiceDate: moment(),
   invoiceNumber: '',
   street: '',
   town: ''
@@ -74,9 +77,11 @@ class NewInvoice extends Component {
       .then(invoice => {
         const { data } = invoice
         const { entries, headers } = data
+        const parsedHeaders = this.parseHeadersIn(headers)
+
         this.setState({
           entries,
-          headers,
+          headers: parsedHeaders,
           loading: false
         })
       })
@@ -124,6 +129,7 @@ class NewInvoice extends Component {
   headerForm () {
     const { headers } = this.state
     const { company, street, town, btw, invoiceNumber, invoiceDate, expireDate } = headers
+
     return (
       <Form>
         <Form.Group>
@@ -134,11 +140,37 @@ class NewInvoice extends Component {
         <Form.Group>
           <Form.Input onChange={this.handleHeaderChange.bind(this)} label='BTW-nummer' name='btw' placeholder='BTW-nummer' value={btw} required width={4} />
           <Form.Input onChange={this.handleHeaderChange.bind(this)} label='Factuurnummer' name='invoiceNumber' placeholder='Factuurnummer' value={invoiceNumber} required width={4} />
-          <Form.Input onChange={this.handleHeaderChange.bind(this)} label='Factuurdatum' name='invoiceDate' placeholder='Factuurdatum' value={invoiceDate} required width={4} />
-          <Form.Input onChange={this.handleHeaderChange.bind(this)} label='Vervaldag' name='expireDate' placeholder='Vervaldag' value={expireDate} required width={4} />
+          <Form.Field required width={2}>
+            <label>Factuur datum</label>
+            <DatePicker
+              style={{width: '100%'}}
+              selected={invoiceDate}
+              onChange={this.setInvoiceDate.bind(this)}
+              dateFormat={'DD/MM/YYYY'}
+            />
+          </Form.Field>
+          <Form.Field required width={2}>
+            <label>Vervaldag</label>
+            <DatePicker
+              style={{width: '100%'}}
+              selected={expireDate}
+              onChange={this.setExpireDate.bind(this)}
+              dateFormat={'DD/MM/YYYY'}
+            />
+          </Form.Field>
         </Form.Group>
       </Form>
     )
+  }
+
+  setExpireDate (date) {
+    const newHeaders = Object.assign(this.state.headers, { expireDate: date })
+    this.setState({ headers: newHeaders })
+  }
+
+  setInvoiceDate (date) {
+    const newHeaders = Object.assign(this.state.headers, { invoiceDate: date })
+    this.setState({ headers: newHeaders })
   }
 
   handleHeaderChange (e, {name, value}) {
@@ -290,12 +322,30 @@ class NewInvoice extends Component {
       })
       return
     }
-    const body = Object.assign({}, {entries}, {headers})
+    const parsedHeaders = this.parseHeadersOut(headers)
+    const body = Object.assign({}, {entries}, {headers: parsedHeaders})
     const savePromise = edit ? this.updateInvoice(body, id) : this.postInvoice(body)
 
     savePromise
       .then(() => this.setState({ saving: false }))
       .catch(() => this.setState({ saving: false, errorMessage: 'kon niet opslaan, probeer later nog eens' }))
+  }
+
+  parseHeadersOut (headers) {
+    const headerCopy = cloneDeep(headers)
+    return reduce(headerCopy, (acc, val, name) => {
+      if (val instanceof moment) acc[name] = val.unix()
+      return acc
+    }, headerCopy)
+  }
+
+  parseHeadersIn (headers) {
+    const headerCopy = cloneDeep(headers)
+    const dateKeysToParse = ['expireDate', 'invoiceDate']
+    return reduce(headerCopy, (acc, val, name) => {
+      if (includes(dateKeysToParse, name)) acc[name] = moment.unix(val)
+      return acc
+    }, headerCopy)
   }
 }
 
