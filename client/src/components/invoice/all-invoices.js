@@ -8,6 +8,7 @@ class AllInvoices extends Component {
   constructor (props) {
     super(props)
     this.getAllInvoices = props.getAllInvoices
+    this.deleteInvoice = props.deleteInvoice
     this.state = {
       loading: true,
       invoices: []
@@ -15,6 +16,10 @@ class AllInvoices extends Component {
   }
 
   componentDidMount () {
+    this._fetchAllInvoices()
+  }
+  _fetchAllInvoices () {
+    this.setState({loading: true})
     this.getAllInvoices()
       .then(res => {
         const { data } = res
@@ -68,9 +73,22 @@ class AllInvoices extends Component {
           { company } - { invoiceNumber }
         </Table.Cell>
         <Table.Cell>{ town } - { street }</Table.Cell>
-        <Table.Cell textAlign='right'> { new Date(date).toLocaleDateString() }</Table.Cell>
+        <Table.Cell textAlign='right'>
+          { new Date(date).toLocaleDateString() }
+          <Button onClick={this.handleDelete.bind(this, _id)} circular icon='trash outline' />
+        </Table.Cell>
       </Table.Row>
     )
+  }
+
+  handleDelete (id) {
+    this.setState({deleteLoading: true})
+    this.deleteInvoice(id)
+      .then(() => {
+        this.setState({deleteLoading: false})
+        this._fetchAllInvoices()
+      })
+      .catch(() => this.setState({deleteLoading: false}))
   }
 }
 

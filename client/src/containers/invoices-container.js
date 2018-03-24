@@ -27,7 +27,7 @@ class InvoicesContainer extends Component {
 
   renderAllInvoices () {
     return (
-      <AllInvoices setActiveMenu={this.setActiveMenu} getAllInvoices={this.getAllInvoices.bind(this)} />
+      <AllInvoices setActiveMenu={this.setActiveMenu} getAllInvoices={this.getAllInvoices.bind(this)} deleteInvoice={this.deleteInvoice.bind(this)} />
     )
   }
 
@@ -84,6 +84,16 @@ class InvoicesContainer extends Component {
     return auth.getAccessToken()
       .then(accessToken => {
         return axios.get(`/api/invoices/${id}`, {
+          headers: { accessToken }
+        })
+      })
+  }
+
+  deleteInvoice (id) {
+    const { auth } = this
+    return auth.getAccessToken()
+      .then(accessToken => {
+        return axios.delete(`/api/invoices/${id}`, {
           headers: { accessToken }
         })
       })

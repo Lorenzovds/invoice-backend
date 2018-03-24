@@ -45,4 +45,14 @@ router.put('/:id', (req, res, next) => {
     .catch(next)
 })
 
+router.delete('/:id', (req, res, next) => {
+  const { user, params } = req
+  const { id } = params
+  db.delete('invoices', user, id)
+    .then(() => {
+      res.send().status(200)
+    })
+    .catch(next)
+})
+
 module.exports = router

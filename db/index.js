@@ -63,10 +63,26 @@ function get (name, user, id) {
   })
 }
 
+function remove (name, user, id) {
+  return new Promise((resolve, reject) => {
+    const store = storeMap[name]
+    if (!store) return reject(new Error('no such store'))
+    store.findOne({ user: user, _id: id }, (err, doc) => {
+      if (err) return reject(err)
+      if (!doc) return reject(new Error('no such invoice'))
+      const isOwner = _.isEqual(user, doc.user)
+      if (!isOwner) reject(new Error('not owner'))
+      store.remove({_id: doc._id})
+      resolve()
+    })
+  })
+}
+
 module.exports = {
   init,
   get,
   insert,
   all: getAll,
+  delete: remove,
   update
 }
