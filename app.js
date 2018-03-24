@@ -30,6 +30,7 @@ app.use((req, res, next) => {
 
 app.use('/api', router)
 
+app.use('/', express.static(`${__dirname}/client/build`))
 app.use('*', express.static(`${__dirname}/client/build`))
 
 // catch 404 and forward to error handler
