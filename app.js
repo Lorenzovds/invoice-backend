@@ -2,7 +2,6 @@ const express = require('express')
 const cookieParser = require('cookie-parser')
 const bodyParser = require('body-parser')
 const httpError = require('http-errors')
-const path = require('path')
 
 const router = require('./routes')
 const logger = require('./lib/logger')
@@ -23,19 +22,15 @@ app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(cookieParser())
 
-app.use(function (req, res, next) {
-  res.setHeader('Access-Control-Allow-Origin', '*')
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE')
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', 'http://<YOUR-APP-NAME>.herokuapp.com')
+  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept')
   next()
 })
 
 app.use('/api', router)
 
-app.use('/', express.static(`${__dirname}/client/build`))
-
-app.get('*', (req, res) => {
-  res.sendFile(path.join(`${__dirname}/client/public/index.html`))
-})
+app.use('*', express.static(`${__dirname}/client/build`))
 
 // catch 404 and forward to error handler
 app.use((req, res, next) => {
