@@ -3,14 +3,19 @@ import { Segment, Image, Dropdown, Container, Button, Table, Header } from 'sema
 import domtoimage from 'dom-to-image'
 import JsPdf from 'jspdf'
 import moment from 'moment'
-import { map, find, reduce } from 'lodash'
+import { map, find, reduce, slice } from 'lodash'
+import pSeries from 'p-series'
 import '../../App.css'
+
+const INTRO_CAP = 9
+const PAGE_CAP = 17
 
 class ExampleInvoice extends Component {
   constructor (props) {
     super(props)
     this.getAllInvoices = props.getAllInvoices
     this.setActiveMenu = props.setActiveMenu
+    this.invoicePagesDOM = []
     this.state = {
       loading: true,
       invoices: [],
@@ -40,6 +45,7 @@ class ExampleInvoice extends Component {
         value: invoice._id
       }
     })
+
     return (
       <Segment basic loading={loading}>
         <Container textAlign='right' style={{display: 'table', marginLeft: 'auto'}}>
@@ -49,9 +55,10 @@ class ExampleInvoice extends Component {
         <Container style={{ minWidth: '595.28px', width: '595.28px', height: 'auto' }}>
           <div style={{ paddingTop: '40px' }} ref={(input) => { this.invoiceDOM = input }} >
             { this.renderInvoiceHeader() }
-            { this.renderInvoiceTable() }
+            { this.renderInvoiceTable(0) }
           </div>
-          <div ref={(input) => { this.generalDOM = input }}>
+          { this.renderPagedInvoiceTables() }
+          <div style={{ paddingTop: '40px' }} ref={(input) => { this.generalDOM = input }}>
             { this.getGeneralInfo() }
           </div>
         </Container>
@@ -62,24 +69,45 @@ class ExampleInvoice extends Component {
   handleDropdownChange (e, {value}) {
     const { invoices } = this.state
     const selectedInvoice = find(invoices, {'_id': value})
-    this.setState({ selectedInvoice })
+    let currentPage = 0
+    const pagedInvoices = reduce(selectedInvoice.entries, (acc, entry, index) => {
+      if (index === (PAGE_CAP * currentPage + INTRO_CAP)) {
+        ++currentPage
+        acc[currentPage] = []
+      }
+      acc[currentPage].push(entry)
+      return acc
+    }, [[]])
+
+    this.setState({ selectedInvoice, pagedInvoices })
   }
 
   handleExport () {
-    const { invoiceDOM, generalDOM, state } = this
+    const { invoiceDOM, generalDOM, invoicePagesDOM, state } = this
     const { selectedInvoice } = state
     const { headers } = selectedInvoice
     const { company, invoiceNumber } = headers
+    const doc = new JsPdf('p', 'pt', 'a4')
+
     domtoimage.toPng(invoiceDOM)
       .then(function (dataUrl) {
-        const doc = new JsPdf('p', 'pt', 'a4')
-        const width = invoiceDOM.clientWidth
-        const height = invoiceDOM.clientHeight
-        doc.addImage(dataUrl, 'PNG', 0, 0, width, height)
+        doc.addImage(dataUrl, 'PNG', 0, 0, invoiceDOM.clientWidth, invoiceDOM.clientHeight)
+        const pagesP = map(invoicePagesDOM, page => {
+          return () => {
+            return domtoimage.toPng(page)
+              .then(pageUrl => {
+                doc.addPage()
+                doc.addImage(pageUrl, 'PNG', 0, 0, page.clientWidth, page.clientHeight)
+              })
+          }
+        })
+        return pSeries(pagesP)
+      })
+      .then(() => {
         return domtoimage.toPng(generalDOM)
           .then(generalUrl => {
             doc.addPage()
-            doc.addImage(generalUrl, 'PNG', 0, 0, width, height)
+            doc.addImage(generalUrl, 'PNG', 0, 0, generalDOM.clientWidth, generalDOM.clientHeight)
             doc.save(`Factuur_${company}_${invoiceNumber}`)
           })
       })
@@ -144,14 +172,29 @@ class ExampleInvoice extends Component {
     )
   }
 
-  renderInvoiceTable () {
-    const { selectedInvoice } = this.state
+  renderPagedInvoiceTables () {
+    const { pagedInvoices } = this.state
+    if (!pagedInvoices) return null
+    const sliced = slice(pagedInvoices, 1)
+    return map(sliced, (part, index) => {
+      return (
+        <div key={index} style={{ paddingTop: '40px' }} ref={(input) => { this.invoicePagesDOM.push(input) }}>
+          { this.renderInvoiceTable(++index) }
+        </div>
+      )
+    })
+  }
+
+  renderInvoiceTable (index) {
+    const { selectedInvoice, pagedInvoices } = this.state
     if (!selectedInvoice) return null
+    const invoicesToUse = pagedInvoices[index]
+    if (!invoicesToUse) return null
     return (
       <div style={{ margin: '10px' }}>
         <Table celled>
           {this.renderTableHeader()}
-          {this.renderTableBody()}
+          {this.renderTableBody(invoicesToUse, index)}
         </Table>
       </div>
     )
@@ -171,12 +214,13 @@ class ExampleInvoice extends Component {
     )
   }
 
-  renderTableBody () {
-    const { entries } = this.state.selectedInvoice
+  renderTableBody (entries, index) {
+    const { pagedInvoices } = this.state
+
     return (
       <Table.Body>
         { map(entries, this.renderTableEntry.bind(this))}
-        { this.renderTotalEntry(entries)}
+        { ((pagedInvoices.length - 1) === index) && (this.renderTotalEntry(entries))}
       </Table.Body>
     )
   }
@@ -210,7 +254,8 @@ class ExampleInvoice extends Component {
     return parseFloat(((parseFloat(amount, 10) * parseFloat(price, 10)) * (1 + (parseFloat(tax, 10) / 100))).toFixed(2))
   }
 
-  getTotalAmount (entries) {
+  getTotalAmount () {
+    const { entries } = this.state.selectedInvoice
     return reduce(entries, (acc, entry) => {
       const { amount, price, tax } = entry
       const totalPrice = this.calculatePrice(amount, price, tax)
@@ -221,7 +266,7 @@ class ExampleInvoice extends Component {
 
   getGeneralInfo () {
     return (
-      <div style={{paddingLeft: '30px', paddingRight: '30px', paddingBottom: '30px', paddingTop: '30px'}}>
+      <div style={{paddingLeft: '20px', paddingRight: '20px', paddingBottom: '20px', paddingTop: '20px'}}>
         <h4>Algemene verkoopsvoorwaarden</h4>
         <ol>
           <li>De facturen zijn betaalbaar netto, binnen de 15 dagen na factuurdatum.</li>
