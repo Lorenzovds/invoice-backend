@@ -103,7 +103,7 @@ class NewInvoice extends Component {
   }
 
   render () {
-    const { errorMessage, loading, edit, loadingError } = this.state
+    const { errorMessage, loading, edit, loadingError, positiveMessage } = this.state
     return (
       <Segment basic>
         <Loader active={loading} size='medium'>Factuur inladen</Loader>
@@ -116,6 +116,15 @@ class NewInvoice extends Component {
               negative>
               <Message.Header>Oeps</Message.Header>
               <Message.Content>{errorMessage || loadingError}</Message.Content>
+            </Message>
+          )
+        }
+        {
+          (positiveMessage) && (
+            <Message
+              positive>
+              <Message.Header>Success</Message.Header>
+              <Message.Content>{positiveMessage}</Message.Content>
             </Message>
           )
         }
@@ -327,7 +336,7 @@ class NewInvoice extends Component {
     const savePromise = edit ? this.updateInvoice(body, id) : this.postInvoice(body)
 
     savePromise
-      .then(() => this.setState({ saving: false }))
+      .then(() => this.setState({ saving: false, positiveMessage: 'factuur opgeslagen!' }))
       .catch(() => this.setState({ saving: false, errorMessage: 'kon niet opslaan, probeer later nog eens' }))
   }
 

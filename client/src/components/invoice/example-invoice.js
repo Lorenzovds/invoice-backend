@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import { Segment, Image, Dropdown, Container, Button, Table, Header } from 'semantic-ui-react'
 import domtoimage from 'dom-to-image'
 import JsPdf from 'jspdf'
+import moment from 'moment'
 import { map, find, reduce } from 'lodash'
 import '../../App.css'
 
@@ -50,6 +51,9 @@ class ExampleInvoice extends Component {
             { this.renderInvoiceHeader() }
             { this.renderInvoiceTable() }
           </div>
+          <div ref={(input) => { this.generalDOM = input }}>
+            { this.getGeneralInfo() }
+          </div>
         </Container>
       </Segment>
     )
@@ -62,7 +66,7 @@ class ExampleInvoice extends Component {
   }
 
   handleExport () {
-    const { invoiceDOM, state } = this
+    const { invoiceDOM, generalDOM, state } = this
     const { selectedInvoice } = state
     const { headers } = selectedInvoice
     const { company, invoiceNumber } = headers
@@ -72,7 +76,12 @@ class ExampleInvoice extends Component {
         const width = invoiceDOM.clientWidth
         const height = invoiceDOM.clientHeight
         doc.addImage(dataUrl, 'PNG', 0, 0, width, height)
-        doc.save(`Factuur_${company}_${invoiceNumber}`)
+        return domtoimage.toPng(generalDOM)
+          .then(generalUrl => {
+            doc.addPage()
+            doc.addImage(generalUrl, 'PNG', 0, 0, width, height)
+            doc.save(`Factuur_${company}_${invoiceNumber}`)
+          })
       })
       .catch(function (error) {
         console.error('oops, something went wrong!', error)
@@ -124,8 +133,8 @@ class ExampleInvoice extends Component {
                 <Table.Row>
                   <Table.Cell>{btw}</Table.Cell>
                   <Table.Cell>{invoiceNumber}</Table.Cell>
-                  <Table.Cell>{invoiceDate}</Table.Cell>
-                  <Table.Cell>{expireDate}</Table.Cell>
+                  <Table.Cell>{moment.unix(invoiceDate).format('DD/MM/YYYY')}</Table.Cell>
+                  <Table.Cell>{moment.unix(expireDate).format('DD/MM/YYYY')}</Table.Cell>
                 </Table.Row>
               </Table.Body>
             </Table>
@@ -208,6 +217,22 @@ class ExampleInvoice extends Component {
       acc += totalPrice
       return acc
     }, 0)
+  }
+
+  getGeneralInfo () {
+    return (
+      <div style={{paddingLeft: '30px', paddingRight: '30px', paddingBottom: '30px', paddingTop: '30px'}}>
+        <h4>Algemene verkoopsvoorwaarden</h4>
+        <ol>
+          <li>De facturen zijn betaalbaar netto, binnen de 15 dagen na factuurdatum.</li>
+          <li>In geval van niet-betaling op de vervaldatum, zal vanaf deze vervaldatum van rechtswege en zonder ingebrekestelling, verwijlintresten aan 12% per jaar verschuldigd.</li>
+          <li>Indien binnen de 5 werkdagen geen gevolg gegeven wordt aan een aangetekend schrijven tot aanmaning, zal benevens de verwijlintresten, het bedrag van iedere achterstallige factuur van rechtswege verhoogd worden met 15 %, met een minimum van € 50 per factuur.</li>
+          <li>Klachten betreffende leveringen dienen schriftelijk te gebeuren binnen de 2 werkdagen na levering. Iedere teruggave moet omschreven worden met volgende gegevens: datum van levering, nummer van de zendnota en aard van de schade (breuk of manco).</li>
+          <li>De geleverde goederen blijven eigendom van de leverancier (verkoper) tot volledige betaling is geschied van de verschuldigde hoofdsom, plus eventuele kosten en intresten. De levering gebeurt evenwel op risico van de koper, die zich tegen mogelijke schadegevallen hoort te verzekeren. De koper zal de leverancier (verkoper) verwittigen indien de goederen geplaatst worden in een ruimte die door de koper wordt gehuurd. Desgevallend zal hij de identiteit en de woonplaats van de verhuurder bekendmaken, zodat de leverancier hem op zijn eigendomsvoorbehoud kan wijzen.</li>
+          <li>Bij gebeurlijke geschillen is alleen de Rechtbank van Koophandel te Dendermonde bevoegd.</li>
+        </ol>
+      </div>
+    )
   }
 }
 

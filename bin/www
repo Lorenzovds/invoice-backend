@@ -3,26 +3,24 @@
 const app = require('../app')
 const http = require('http')
 const logger = require('../lib/logger')
-const db = require('../db')
-
+const mongoose = require('mongoose')
+const mongoURL = 'mongodb://localhost/invoicer'
 const { PORT = 3000 } = process.env
 
 app.set('port', PORT)
 
 const server = http.createServer(app)
 
-db.init()
+mongoose.connect(mongoURL)
   .then(() => {
-    logger.debug('created datastores')
+    logger.info('Started database ...')
     server.listen(PORT)
     server.on('error', onError)
     server.on('listening', onListening)
     server.on('close', onClose)
     process.on('SIGINT', onSigInt)
   })
-  .catch(err => {
-    logger.error(err)
-  })
+  .catch(onError)
 
 function onError (error) {
   logger.error(`Server error => ${error}`)
@@ -30,7 +28,7 @@ function onError (error) {
 }
 
 function onListening () {
-  logger.debug(`Listening on ${PORT}`)
+  logger.info(`Listening on ${PORT}`)
 }
 
 function onClose () {
