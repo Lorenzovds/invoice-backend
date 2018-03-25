@@ -10,7 +10,6 @@
     "jspdf": "^1.3.5",
     "lodash": "^4.17.5",
     "moment": "^2.21.0",
-    "p-series": "^1.1.0",
     "react": "^16.2.0",
     "react-datepicker": "^1.3.0",
     "react-dom": "^16.2.0",

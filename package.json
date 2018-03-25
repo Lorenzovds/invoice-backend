@@ -6,7 +6,7 @@
     "start": "NODE_ENV=production node ./bin/www",
     "precommit": "standard --verbose | snazzy",
     "client": "yarn --cwd=client start",
-    "server": "yarn start",
+    "server": "nodemon ./bin/www",
     "dev": "concurrently --kill-others-on-fail 'yarn server' 'yarn client'",
     "heroku-postbuild": "cd client && yarn --production=false && yarn run build"
   },

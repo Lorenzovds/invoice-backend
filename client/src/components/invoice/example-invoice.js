@@ -3,8 +3,7 @@ import { Segment, Image, Dropdown, Container, Button, Table, Header } from 'sema
 import domtoimage from 'dom-to-image'
 import JsPdf from 'jspdf'
 import moment from 'moment'
-import { map, find, reduce, slice } from 'lodash'
-import pSeries from 'p-series'
+import { map, find, reduce, slice, each } from 'lodash'
 import '../../App.css'
 
 const INTRO_CAP = 9
@@ -92,16 +91,14 @@ class ExampleInvoice extends Component {
     domtoimage.toPng(invoiceDOM)
       .then(function (dataUrl) {
         doc.addImage(dataUrl, 'PNG', 0, 0, invoiceDOM.clientWidth, invoiceDOM.clientHeight)
-        const pagesP = map(invoicePagesDOM, page => {
-          return () => {
-            return domtoimage.toPng(page)
-              .then(pageUrl => {
-                doc.addPage()
-                doc.addImage(pageUrl, 'PNG', 0, 0, page.clientWidth, page.clientHeight)
-              })
-          }
+        each(invoicePagesDOM, async page => {
+          await domtoimage.toPng(page)
+            .then(pageUrl => {
+              doc.addPage()
+              doc.addImage(pageUrl, 'PNG', 0, 0, page.clientWidth, page.clientHeight)
+            })
         })
-        return pSeries(pagesP)
+        return Promise.resolve()
       })
       .then(() => {
         return domtoimage.toPng(generalDOM)

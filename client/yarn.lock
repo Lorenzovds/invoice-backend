@@ -30,10 +30,6 @@
     babel-runtime "^6.26.0"
     prop-types "^15.5.10"
 
-"@sindresorhus/is@^0.7.0":
-  version "0.7.0"
-  resolved "https://npm.waylay.io/@sindresorhus/is/-/is-0.7.0/9a06f4f137ee84d7df0460c1fdb1135ffa6c50fd.tgz#9a06f4f137ee84d7df0460c1fdb1135ffa6c50fd"
-
 Base64@0.3.0:
   version "0.3.0"
   resolved "https://npm.waylay.io/Base64/-/Base64-0.3.0/6da261a4e80d4fa0f5c684254e5bccd16bbdce9f.tgz#6da261a4e80d4fa0f5c684254e5bccd16bbdce9f"
@@ -4960,17 +4956,6 @@ p-locate@^2.0.0:
 p-map@^1.1.1:
   version "1.2.0"
   resolved "https://npm.waylay.io/p-map/-/p-map-1.2.0/e4e94f311eabbc8633a1e79908165fca26241b6b.tgz#e4e94f311eabbc8633a1e79908165fca26241b6b"
-
-p-reduce@^1.0.0:
-  version "1.0.0"
-  resolved "https://npm.waylay.io/p-reduce/-/p-reduce-1.0.0/18c2b0dd936a4690a529f8231f58a0fdb6a47dfa.tgz#18c2b0dd936a4690a529f8231f58a0fdb6a47dfa"
-
-p-series@^1.1.0:
-  version "1.1.0"
-  resolved "https://npm.waylay.io/p-series/-/p-series-1.1.0/f2d8522cdfd58b464eb9685651d465037ee3c957.tgz#f2d8522cdfd58b464eb9685651d465037ee3c957"
-  dependencies:
-    "@sindresorhus/is" "^0.7.0"
-    p-reduce "^1.0.0"
 
 p-try@^1.0.0:
   version "1.0.0"
