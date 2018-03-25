@@ -4,7 +4,9 @@ const app = require('../app')
 const http = require('http')
 const logger = require('../lib/logger')
 const mongoose = require('mongoose')
-const mongoURL = 'mongodb://localhost/invoicer'
+const config = require('../config')
+const { NODE_ENV } = process.env
+const mongoURL = NODE_ENV === 'production' ? config.mongoDB : 'mongodb://localhost/invoicer'
 const { PORT = 3000 } = process.env
 
 app.set('port', PORT)
