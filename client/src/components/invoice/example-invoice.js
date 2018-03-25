@@ -262,6 +262,8 @@ class ExampleInvoice extends Component {
   }
 
   getGeneralInfo () {
+    const { selectedInvoice } = this.state
+    if (!selectedInvoice) return null
     return (
       <div style={{paddingLeft: '20px', paddingRight: '20px', paddingBottom: '20px', paddingTop: '20px'}}>
         <h4>Algemene verkoopsvoorwaarden</h4>
