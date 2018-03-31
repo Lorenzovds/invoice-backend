@@ -46,8 +46,8 @@ class AuthenticatedContainer extends Component {
         floated
         pointing
         style={{'minHeight': '100%'}}>
-        <Grid verticalAlign='middle' textAlign='center' style={{width: 'auto', height: '100%'}}>
-          <Grid.Column verticalAlign='middle'>
+        <Grid verticalAlign='top' textAlign='center' style={{width: 'auto', paddingTop: '30%'}}>
+          <Grid.Column verticalAlign='top'>
             <Menu.Item
               name='all'
               as={Link}
