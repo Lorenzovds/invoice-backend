@@ -39,8 +39,11 @@ class ExampleInvoice extends Component {
   render () {
     const { loading, invoices, selectedInvoice } = this.state
     const dropdownOptions = map(invoices, invoice => {
+      const { headers, type } = invoice
+      const { company, invoiceNumber } = headers
+      const displayType = this.getDisplayType(type)
       return {
-        text: `${invoice.headers.company} - ${invoice.headers.invoiceNumber}`,
+        text: `${company} - ${invoiceNumber} (${displayType})`,
         value: invoice._id
       }
     })
@@ -65,6 +68,14 @@ class ExampleInvoice extends Component {
     )
   }
 
+  getDisplayType (type) {
+    const typeMap = {
+      'offer': 'Offerte',
+      'invoice': 'Factuur'
+    }
+    return typeMap[type]
+  }
+
   handleDropdownChange (e, {value}) {
     const { invoices } = this.state
     const selectedInvoice = find(invoices, {'_id': value})
@@ -87,6 +98,7 @@ class ExampleInvoice extends Component {
     const { headers, type } = selectedInvoice
     const { company, invoiceNumber } = headers
     const doc = new JsPdf('p', 'pt', 'a4')
+    const displayType = this.getDisplayType(type)
 
     domtoimage.toPng(invoiceDOM)
       .then(async (dataUrl) => {
@@ -108,7 +120,7 @@ class ExampleInvoice extends Component {
           .then(generalUrl => {
             doc.addPage()
             doc.addImage(generalUrl, 'PNG', 0, 0, generalDOM.clientWidth, generalDOM.clientHeight)
-            doc.save(`${type === 'invoice' ? 'factuur' : 'offerte'}_${company}_${invoiceNumber}`)
+            doc.save(`${displayType}_${company}_${invoiceNumber}`)
           })
       })
       .catch(function (error) {
