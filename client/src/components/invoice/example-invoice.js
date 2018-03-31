@@ -84,28 +84,31 @@ class ExampleInvoice extends Component {
   handleExport () {
     const { invoiceDOM, generalDOM, invoicePagesDOM, state } = this
     const { selectedInvoice } = state
-    const { headers } = selectedInvoice
+    const { headers, type } = selectedInvoice
     const { company, invoiceNumber } = headers
     const doc = new JsPdf('p', 'pt', 'a4')
 
     domtoimage.toPng(invoiceDOM)
-      .then(function (dataUrl) {
+      .then(async (dataUrl) => {
         doc.addImage(dataUrl, 'PNG', 0, 0, invoiceDOM.clientWidth, invoiceDOM.clientHeight)
-        each(invoicePagesDOM, async page => {
-          await domtoimage.toPng(page)
-            .then(pageUrl => {
-              doc.addPage()
-              doc.addImage(pageUrl, 'PNG', 0, 0, page.clientWidth, page.clientHeight)
-            })
+        const generatePages = await Promise.all(map(invoicePagesDOM, async (page, index) => {
+          const pageUrl = await domtoimage.toPng(page)
+          return {pageUrl, page}
+        }))
+        return generatePages
+      })
+      .then(pages => {
+        each(pages, ({pageUrl, page}) => {
+          doc.addPage()
+          doc.addImage(pageUrl, 'PNG', 0, 0, page.clientWidth, page.clientHeight)
         })
-        return Promise.resolve()
       })
       .then(() => {
         return domtoimage.toPng(generalDOM)
           .then(generalUrl => {
             doc.addPage()
             doc.addImage(generalUrl, 'PNG', 0, 0, generalDOM.clientWidth, generalDOM.clientHeight)
-            doc.save(`Factuur_${company}_${invoiceNumber}`)
+            doc.save(`${type === 'invoice' ? 'factuur' : 'offerte'}_${company}_${invoiceNumber}`)
           })
       })
       .catch(function (error) {
