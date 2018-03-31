@@ -131,7 +131,8 @@ class ExampleInvoice extends Component {
   renderInvoiceHeader () {
     const { selectedInvoice } = this.state
     if (!selectedInvoice) return null
-    const { headers } = selectedInvoice
+    const { headers, type } = selectedInvoice
+    const displayType = this.getDisplayType(type)
     const { company, street, town, btw, invoiceNumber, invoiceDate, expireDate } = headers
     return (
       <div>
@@ -150,6 +151,7 @@ class ExampleInvoice extends Component {
             <p>BTWnr: BE  0690.876.560</p>
             <p>IBAN: BE67 0018 3341 5487</p>
             <p>BIC: GEBABEBB</p>
+            <Header as='h3'>Type: {displayType}</Header>
           </Container>
         </Container>
         <Container textAlign='left' style={{width: 'auto', paddingLeft: '30px'}}>
