@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { withRouter } from 'react-router'
-import { Header, Form, Loader, Table, Button, Message, Segment } from 'semantic-ui-react'
+import { Header, Form, Loader, Table, Button, Message, Segment, Dropdown } from 'semantic-ui-react'
 import { map, cloneDeep, reduce, includes, every } from 'lodash'
 import moment from 'moment'
 import DatePicker from 'react-datepicker'
@@ -42,20 +42,25 @@ const headerDefaults = {
   town: ''
 }
 
+const typeOptions = [
+  {
+    text: 'Factuur',
+    value: 'invoice'
+  },
+  {
+    text: 'Offerte',
+    value: 'offer'
+  }
+]
+
 const numericalEntries = ['amount', 'price', 'tax']
 
 class NewInvoice extends Component {
   constructor (props) {
     super(props)
+    this.state = {}
     this.setActiveMenu = props.setActiveMenu
     this.props = props
-    this.state = {
-      headers: cloneDeep(headerDefaults),
-      entry: cloneDeep(entryDefaults), // clone so we can clear them afterwards
-      entries: [],
-      saving: false,
-      loading: true
-    }
     this.postInvoice = props.postInvoice
     this.getInvoice = props.getInvoice
     this.updateInvoice = props.updateInvoice
@@ -63,10 +68,11 @@ class NewInvoice extends Component {
 
   componentWillMount () {
     this.setActiveMenu('new')
+    this.setDefaults()
   }
 
   componentWillReceiveProps (props) {
-    this.clearFields()
+    this.setDefaults()
     const { match } = props
     const { params } = match
     const { id } = params
@@ -76,12 +82,13 @@ class NewInvoice extends Component {
     this.getInvoice(id)
       .then(invoice => {
         const { data } = invoice
-        const { entries, headers } = data
+        const { entries, headers, type = typeOptions[0].value } = data
         const parsedHeaders = this.parseHeadersIn(headers)
 
         this.setState({
           entries,
           headers: parsedHeaders,
+          type,
           loading: false
         })
       })
@@ -91,10 +98,11 @@ class NewInvoice extends Component {
       })
   }
 
-  clearFields () {
+  setDefaults () {
     this.setState({
       headers: cloneDeep(headerDefaults), // clone so we can clear them afterwards
       entry: cloneDeep(entryDefaults), // clone so we can clear them afterwards
+      type: typeOptions[0].value,
       entries: [],
       saving: false,
       loading: false,
@@ -103,11 +111,17 @@ class NewInvoice extends Component {
   }
 
   render () {
-    const { errorMessage, loading, edit, loadingError, positiveMessage } = this.state
+    const { errorMessage, loading, edit, loadingError, positiveMessage, type } = this.state
+
     return (
       <Segment basic>
         <Loader active={loading} size='medium'>Factuur inladen</Loader>
-        <Header as='h2'> {edit ? 'Factuur aanpassen' : 'Nieuwe factuur'}</Header>
+        <Header as='h2'>
+          {edit ? 'Aanpassen' : 'Nieuw'}
+        </Header>
+        <Header as='h4'>
+          <Dropdown onChange={this.handleTypeChange.bind(this)} selection value={type} options={typeOptions} />
+        </Header>
         <div>{ this.headerForm() }</div>
         <div>{ this.renderTable() }</div>
         {
@@ -185,6 +199,10 @@ class NewInvoice extends Component {
   handleHeaderChange (e, {name, value}) {
     const newHeaders = Object.assign(this.state.headers, { [name]: value })
     this.setState({ headers: newHeaders })
+  }
+
+  handleTypeChange (e, {value}) {
+    this.setState({ type: value })
   }
 
   renderTable () {
@@ -320,9 +338,10 @@ class NewInvoice extends Component {
     const { edit, id } = this.state
     this.setState({
       saving: true,
-      errorMessage: ''
+      errorMessage: '',
+      positiveMessage: ''
     })
-    const { entries, headers } = this.state
+    const { entries, headers, type } = this.state
     const isValid = this.validateHeaders()
     if (!isValid) {
       this.setState({
@@ -332,7 +351,7 @@ class NewInvoice extends Component {
       return
     }
     const parsedHeaders = this.parseHeadersOut(headers)
-    const body = Object.assign({}, {entries}, {headers: parsedHeaders})
+    const body = Object.assign({}, {entries}, {headers: parsedHeaders}, {type})
     const savePromise = edit ? this.updateInvoice(body, id) : this.postInvoice(body)
 
     savePromise
