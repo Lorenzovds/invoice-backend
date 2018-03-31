@@ -4,6 +4,11 @@ import { Link } from 'react-router-dom'
 import { map, orderBy } from 'lodash'
 import '../../App.css'
 
+const typeMap = {
+  'offer': 'Offerte',
+  'invoice': 'Factuur'
+}
+
 class AllInvoices extends Component {
   constructor (props) {
     super(props)
@@ -27,7 +32,7 @@ class AllInvoices extends Component {
         this.setState({ invoices: sortedInvoices, loading: false })
       })
       .catch(() => {
-        this.setState({ loading: false, errorMessage: 'Could not load invoices' })
+        this.setState({ loading: false, errorMessage: 'Kon facturen niet inladen' })
       })
   }
   render () {
@@ -43,7 +48,7 @@ class AllInvoices extends Component {
       <Table celled striped>
         <Table.Header>
           <Table.Row>
-            <Table.HeaderCell colSpan='2'>Alle facturen</Table.HeaderCell>
+            <Table.HeaderCell colSpan='2'>Alle facturen / offertes</Table.HeaderCell>
             <Table.HeaderCell textAlign={'right'}>Aangemaakt op</Table.HeaderCell>
           </Table.Row>
         </Table.Header>
@@ -62,20 +67,21 @@ class AllInvoices extends Component {
   }
 
   renderInvoiceEntry (invoice, index) {
-    const { headers, date, _id } = invoice
+    const { headers, date, _id, type } = invoice
     const { company, town, street, invoiceNumber } = headers
+    const displayType = typeMap[type] || 'geen type'
     return (
       <Table.Row key={index}>
         <Table.Cell>
           <Link to={`invoices/${_id}`}>
             <Button circular icon='pencil' />
           </Link>
-          { company } - { invoiceNumber }
+          { company } - { invoiceNumber } ({displayType})
         </Table.Cell>
         <Table.Cell>{ town } - { street }</Table.Cell>
         <Table.Cell textAlign='right'>
           { new Date(date).toLocaleDateString() }
-          <Button onClick={this.handleDelete.bind(this, _id)} circular icon='trash outline' />
+          <Button style={{marginLeft: '10px'}} onClick={this.handleDelete.bind(this, _id)} circular icon='trash outline' />
         </Table.Cell>
       </Table.Row>
     )
