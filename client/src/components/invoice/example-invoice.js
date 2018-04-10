@@ -1,12 +1,12 @@
 import React, { Component } from 'react'
-import { Segment, Image, Dropdown, Container, Button, Table } from 'semantic-ui-react'
+import { Segment, Image, Dropdown, Container, Button, Table, Header } from 'semantic-ui-react'
 import domtoimage from 'dom-to-image'
 import JsPdf from 'jspdf'
 import moment from 'moment'
 import { map, find, reduce, slice, each } from 'lodash'
 import '../../App.css'
 
-const INTRO_CAP = 7
+const INTRO_CAP = 9
 const PAGE_CAP = 17
 
 class ExampleInvoice extends Component {
@@ -153,7 +153,8 @@ class ExampleInvoice extends Component {
             <p style={headerStyle}><b>IBAN:</b> BE67 0018 3341 5487</p>
             <p style={headerStyle}><b>BIC:</b> GEBABEBB</p>
           </Container>
-          <Container style={{width: 'auto', height: 'auto', paddingTop: '40px'}}>
+          <Container style={{width: 'auto', height: 'auto', paddingTop: '40px', paddingLeft: '10px'}}>
+            <Header as='h4'>Klantinfo</Header>
             <p>{company}</p>
             <p>{street}</p>
             <p>{town}</p>
