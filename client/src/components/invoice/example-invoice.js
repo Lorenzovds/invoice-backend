@@ -6,7 +6,7 @@ import moment from 'moment'
 import { map, find, reduce, slice, each } from 'lodash'
 import '../../App.css'
 
-const INTRO_CAP = 9
+const INTRO_CAP = 5
 const PAGE_CAP = 17
 
 class ExampleInvoice extends Component {
@@ -146,20 +146,19 @@ class ExampleInvoice extends Component {
             <p style={headerStyle}>Van Doorsselaere Kevin</p>
             <p style={headerStyle}>Bieststraat 68</p>
             <p style={headerStyle}>9270 Kalken</p>
-            <p style={headerStyle}>Tel: 0497 35 77 98</p>
-            <p style={headerStyle}><b>E-mail:</b></p>
-            <p style={headerStyle}>Kevin_van_Doorsselaere@hotmail.com</p>
-            <p style={headerStyle}><b>BTWnr:</b> BE  0690.876.560</p>
+            <p><b>Tel:</b> 0497 35 77 98</p>
+            <p style={headerStyle}><b>E-mail:</b> Kevin_van_Doorsselaere@hotmail.com</p>
+            <p><b>BTWnr:</b> BE  0690.876.560</p>
             <p style={headerStyle}><b>IBAN:</b> BE67 0018 3341 5487</p>
             <p style={headerStyle}><b>BIC:</b> GEBABEBB</p>
           </Container>
-          <Container style={{width: 'auto', height: 'auto', paddingTop: '40px', paddingLeft: '10px'}}>
-            <Header as='h4'>Klantinfo</Header>
-            <p>{company}</p>
-            <p>{street}</p>
-            <p>{town}</p>
-          </Container>
         </Container>
+        <Segment basic floated='right' style={{marginRight: '100px'}}>
+          <Header as='h4'>Klantinfo</Header>
+          <p>{company}</p>
+          <p>{street}</p>
+          <p>{town}</p>
+        </Segment>
         <Container style={{display: 'inline-flex', paddingLeft: '40px', paddingRight: '40px', paddingTop: '40px'}} textAlign='left'>
           <Container>
             <Table style={{width: '100%'}}>
