@@ -5,8 +5,9 @@ import JsPdf from 'jspdf'
 import moment from 'moment'
 import { map, find, reduce, slice, each } from 'lodash'
 import '../../App.css'
+import '../../invoice.css'
 
-const INTRO_CAP = 5
+const INTRO_CAP = 7
 const PAGE_CAP = 17
 
 class ExampleInvoice extends Component {
@@ -54,7 +55,7 @@ class ExampleInvoice extends Component {
           <Dropdown selection onChange={this.handleDropdownChange.bind(this)} options={dropdownOptions} />
           <Button content='Download' disabled={!selectedInvoice} primary onClick={this.handleExport.bind(this)} />
         </Container>
-        <Container style={{ minWidth: '595.28px', width: '595.28px', height: 'auto' }}>
+        <Container className='invoice' style={{ minWidth: '595.28px', width: '595.28px', height: 'auto' }}>
           <div ref={(input) => { this.invoiceDOM = input }} >
             { this.renderInvoiceHeader() }
             { this.renderInvoiceTable(0) }
@@ -142,7 +143,7 @@ class ExampleInvoice extends Component {
       <div>
         <Container style={{display: 'inline-flex'}}>
           <Image style={{width: '200px', height: '200px'}} src='/test-logo.png' size='tiny' />
-          <Container textAlign='left' style={{width: 'auto', height: 'auto', paddingTop: '40px'}}>
+          <Container textAlign='left' style={{height: 'auto', paddingTop: '40px', paddingLeft: '10px'}}>
             <p style={headerStyle}>Van Doorsselaere Kevin</p>
             <p style={headerStyle}>Bieststraat 68</p>
             <p style={headerStyle}>9270 Kalken</p>
@@ -153,13 +154,13 @@ class ExampleInvoice extends Component {
             <p style={headerStyle}><b>BIC:</b> GEBABEBB</p>
           </Container>
         </Container>
-        <Segment basic floated='right' style={{marginRight: '100px'}}>
+        <Segment className='invoice' basic floated='right' style={{marginRight: '100px', marginBottom: '0px'}}>
           <Header as='h4'>Klantinfo</Header>
           <p>{company}</p>
-          <p>{street}</p>
-          <p>{town}</p>
+          <p style={headerStyle}>{street}</p>
+          <p style={headerStyle}>{town}</p>
         </Segment>
-        <Container style={{display: 'inline-flex', paddingLeft: '40px', paddingRight: '40px', paddingTop: '40px'}} textAlign='left'>
+        <Container style={{display: 'inline-flex', paddingLeft: '40px', paddingRight: '40px', paddingTop: '10px'}} textAlign='left'>
           <Container>
             <Table style={{width: '100%'}}>
               <Table.Body>
