@@ -154,7 +154,7 @@ class ExampleInvoice extends Component {
             <p style={headerStyle}><b>BIC:</b> GEBABEBB</p>
           </Container>
         </Container>
-        <Segment className='invoice' basic floated='right' style={{marginRight: '100px', marginBottom: '0px'}}>
+        <Segment className='invoice' basic floated='right' style={{marginRight: '100px', marginBottom: '0px', width: 'auto'}}>
           <Header as='h4'>Klantinfo</Header>
           <p>{company}</p>
           <p style={headerStyle}>{street}</p>
