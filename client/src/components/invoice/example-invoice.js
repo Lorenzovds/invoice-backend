@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { Segment, Image, Dropdown, Container, Button, Table, Header } from 'semantic-ui-react'
-import domtoimage from 'dom-to-image'
+// TODO revert back to the original lib, currently issues with google chrome
+import domtoimage from '../../lib/dom-to-image.min.js'
 import JsPdf from 'jspdf'
 import moment from 'moment'
 import { map, find, reduce, slice, each } from 'lodash'
