@@ -81,7 +81,7 @@ class AllInvoices extends Component {
         <Table.Cell>{ town } - { street }</Table.Cell>
         <Table.Cell textAlign='right'>
           { new Date(date).toLocaleDateString() }
-          <Button style={{marginLeft: '10px'}} onClick={this.handleDelete.bind(this, _id)} circular icon='trash outline' />
+          <Button style={{marginLeft: '10px'}} onClick={this.handleDelete.bind(this, _id)} circular icon='trash' />
         </Table.Cell>
       </Table.Row>
     )
