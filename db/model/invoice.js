@@ -1,8 +1,15 @@
 const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 
+const entrySchema = new Schema({
+  description: { type: String, required: true },
+  amount: { type: Number, required: true },
+  price: { type: Number, required: true },
+  tax: { type: Number, required: true }
+})
+
 const invoiceSchema = new Schema({
-  entries: [],
+  entries: [entrySchema],
   headers: {},
   user: {},
   date: { type: Date, default: new Date() },

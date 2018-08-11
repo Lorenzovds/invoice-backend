@@ -221,7 +221,7 @@ class ExampleInvoice extends Component {
           <Table.HeaderCell>Aantal</Table.HeaderCell>
           <Table.HeaderCell>Prijs</Table.HeaderCell>
           <Table.HeaderCell>BTW %</Table.HeaderCell>
-          <Table.HeaderCell>Totaal</Table.HeaderCell>
+          <Table.HeaderCell>Totaal (Excl. BTW)</Table.HeaderCell>
         </Table.Row>
       </Table.Header>
     )
@@ -233,6 +233,8 @@ class ExampleInvoice extends Component {
     return (
       <Table.Body>
         { map(entries, this.renderTableEntry.bind(this))}
+        { ((pagedInvoices.length - 1) === index) && (this.renderTotalExclTaxEntry(entries))}
+        { ((pagedInvoices.length - 1) === index) && (this.renderTotalTax(entries))}
         { ((pagedInvoices.length - 1) === index) && (this.renderTotalEntry(entries))}
       </Table.Body>
     )
@@ -242,7 +244,7 @@ class ExampleInvoice extends Component {
     const { description, amount, price, tax } = entry
     const totalPrice = this.calculatePrice(amount, price, tax)
     return (
-      <Table.Row key={index}>
+      <Table.Row textAlign='right' key={index}>
         <Table.Cell>{description}</Table.Cell>
         <Table.Cell>{amount}</Table.Cell>
         <Table.Cell>{price}</Table.Cell>
@@ -252,10 +254,21 @@ class ExampleInvoice extends Component {
     )
   }
 
-  renderTotalEntry (entries) {
+  renderTotalTax (entries) {
     return (
-      <Table.Row textAlign='right' positive style={{paddingTop: '40px', 'borderTop': '2px solid black'}}>
-        <Table.Cell>Totaal</Table.Cell>
+      <Table.Row textAlign='right' style={{paddingTop: '40px', 'borderTop': '2px solid black', 'backgroundColor': 'rgba(217,219,188, 0.6)'}}>
+        <Table.Cell>Totaal BTW</Table.Cell>
+        <Table.Cell colSpan='4'>
+          { this.getTotalTax(entries).toFixed(2)}
+        </Table.Cell>
+      </Table.Row>
+    )
+  }
+
+  renderTotalExclTaxEntry (entries) {
+    return (
+      <Table.Row textAlign='right' style={{paddingTop: '40px', 'borderTop': '2px solid black', 'backgroundColor': 'rgba(217,219,188, 0.6)'}}>
+        <Table.Cell>Totaal Excl. BTW</Table.Cell>
         <Table.Cell colSpan='4'>
           { this.getTotalAmount(entries).toFixed(2)}
         </Table.Cell>
@@ -263,16 +276,40 @@ class ExampleInvoice extends Component {
     )
   }
 
-  calculatePrice (amount, price, tax) {
-    return parseFloat(((parseFloat(amount, 10) * parseFloat(price, 10)) * (1 + (parseFloat(tax, 10) / 100))).toFixed(2))
+  renderTotalEntry (entries) {
+    const total = this.getTotalAmount(entries) + this.getTotalTax(entries)
+    return (
+      <Table.Row textAlign='right' style={{paddingTop: '40px', 'borderTop': '2px solid black', 'backgroundColor': 'rgba(184,216,186, 0.6)'}}>
+        <Table.Cell>Totaal te betalen</Table.Cell>
+        <Table.Cell colSpan='4'>
+          { total.toFixed(2) }
+        </Table.Cell>
+      </Table.Row>
+    )
+  }
+
+  calculatePrice (amount, price) {
+    return amount * price
+  }
+
+  calculateTax (amount, price, tax) {
+    return (amount * price) * (tax / 100)
   }
 
   getTotalAmount () {
     const { entries } = this.state.selectedInvoice
     return reduce(entries, (acc, entry) => {
+      const { amount, price } = entry
+      acc += this.calculatePrice(amount, price)
+      return acc
+    }, 0)
+  }
+
+  getTotalTax () {
+    const { entries } = this.state.selectedInvoice
+    return reduce(entries, (acc, entry) => {
       const { amount, price, tax } = entry
-      const totalPrice = this.calculatePrice(amount, price, tax)
-      acc += totalPrice
+      acc += this.calculateTax(amount, price, tax)
       return acc
     }, 0)
   }

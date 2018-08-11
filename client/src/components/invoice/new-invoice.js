@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { withRouter } from 'react-router'
 import { Header, Form, Loader, Table, Button, Message, Segment, Dropdown } from 'semantic-ui-react'
-import { map, cloneDeep, reduce, includes, every } from 'lodash'
+import { map, cloneDeep, reduce, includes, every, forEach } from 'lodash'
 import moment from 'moment'
 import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
@@ -224,6 +224,7 @@ class NewInvoice extends Component {
           <Table.HeaderCell>Prijs</Table.HeaderCell>
           <Table.HeaderCell>BTW %</Table.HeaderCell>
           <Table.HeaderCell>Totaal</Table.HeaderCell>
+          <Table.HeaderCell />
         </Table.Row>
       </Table.Header>
     )
@@ -262,6 +263,7 @@ class NewInvoice extends Component {
               <Button disabled={loading} style={{'height': '50%'}} positive circular icon='plus square outline' />
             </Form>
           </Table.HeaderCell>
+          <Table.HeaderCell />
         </Table.Row>
       </Table.Footer>
     )
@@ -277,14 +279,25 @@ class NewInvoice extends Component {
         <Table.Cell>{price}</Table.Cell>
         <Table.Cell>{tax}</Table.Cell>
         <Table.Cell>{totalPrice}</Table.Cell>
+        <Table.Cell>
+          <Button style={{'height': '50%'}} negative circular icon='trash' onClick={() => this.deleteEntry(index)} />
+        </Table.Cell>
       </Table.Row>
     )
+  }
+
+  deleteEntry (index) {
+    const { entries } = this.state
+    // splice is mutating
+    const entriesCopy = cloneDeep(entries)
+    entriesCopy.splice(index, 1)
+    this.setState({ entries: entriesCopy })
   }
 
   renderTotalEntry (entries) {
     return (
       <Table.Row textAlign='right'>
-        <Table.Cell colSpan='5' positive style={{'fontSize': '150%', paddingTop: '20px', 'borderTop': '2px solid black'}}>
+        <Table.Cell colSpan='6' positive style={{'fontSize': '150%', paddingTop: '20px', 'borderTop': '2px solid black'}}>
           { this.getTotalAmount(entries).toFixed(2)}
         </Table.Cell>
       </Table.Row>
@@ -334,6 +347,33 @@ class NewInvoice extends Component {
     return every(headers, (val, key) => !!val)
   }
 
+  parseHeadersOut (headers) {
+    const headerCopy = cloneDeep(headers)
+    return reduce(headerCopy, (acc, val, name) => {
+      if (val instanceof moment) acc[name] = val.unix()
+      return acc
+    }, headerCopy)
+  }
+
+  parseEntriesOut (entries) {
+    return map(entries, entry => {
+      const entryCopy = cloneDeep(entry)
+      forEach(entry, (val, key) => {
+        if (includes(numericalEntries, key)) entryCopy[key] = parseFloat(val, 10)
+      })
+      return entryCopy
+    })
+  }
+
+  parseHeadersIn (headers) {
+    const headerCopy = cloneDeep(headers)
+    const dateKeysToParse = ['expireDate', 'invoiceDate']
+    return reduce(headerCopy, (acc, val, name) => {
+      if (includes(dateKeysToParse, name)) acc[name] = moment.unix(val)
+      return acc
+    }, headerCopy)
+  }
+
   saveInvoice () {
     const { edit, id } = this.state
     this.setState({
@@ -351,29 +391,13 @@ class NewInvoice extends Component {
       return
     }
     const parsedHeaders = this.parseHeadersOut(headers)
-    const body = Object.assign({}, {entries}, {headers: parsedHeaders}, {type})
+    const parsedEntries = this.parseEntriesOut(entries)
+    const body = Object.assign({}, {entries: parsedEntries}, {headers: parsedHeaders}, {type})
     const savePromise = edit ? this.updateInvoice(body, id) : this.postInvoice(body)
 
     savePromise
       .then(() => this.setState({ saving: false, positiveMessage: 'factuur opgeslagen!' }))
       .catch(() => this.setState({ saving: false, errorMessage: 'kon niet opslaan, probeer later nog eens' }))
-  }
-
-  parseHeadersOut (headers) {
-    const headerCopy = cloneDeep(headers)
-    return reduce(headerCopy, (acc, val, name) => {
-      if (val instanceof moment) acc[name] = val.unix()
-      return acc
-    }, headerCopy)
-  }
-
-  parseHeadersIn (headers) {
-    const headerCopy = cloneDeep(headers)
-    const dateKeysToParse = ['expireDate', 'invoiceDate']
-    return reduce(headerCopy, (acc, val, name) => {
-      if (includes(dateKeysToParse, name)) acc[name] = moment.unix(val)
-      return acc
-    }, headerCopy)
   }
 }
 
