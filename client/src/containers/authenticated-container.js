@@ -3,7 +3,7 @@ import { Route, Switch, Redirect } from 'react-router'
 import { Link } from 'react-router-dom'
 import InvoicesContainer from './invoices-container'
 import {Header, Grid,
-  Segment, Menu, Icon } from 'semantic-ui-react'
+  Segment, Menu, Icon, Loader } from 'semantic-ui-react'
 import { withAuth } from '@okta/okta-react'
 
 import '../App.css'
@@ -17,9 +17,24 @@ class AuthenticatedContainer extends Component {
     }
     this.setActiveMenu = this.setActiveMenu.bind(this)
     this.auth = props.auth
+    this.checkAuthentication = this.checkAuthentication.bind(this)
+    this.state = { authenticated: null }
+    this.checkAuthentication()
+  }
+
+  async checkAuthentication () {
+    const authenticated = await this.auth.isAuthenticated()
+    if (authenticated !== this.state.authenticated) {
+      this.setState({ authenticated })
+    }
+  }
+
+  componentDidUpdate () {
+    this.checkAuthentication()
   }
 
   render () {
+    const { authenticated } = this.state
     return (
       <div style={{
         height: 'auto',
@@ -28,8 +43,8 @@ class AuthenticatedContainer extends Component {
         minHeight: '100%' }}>
         { this.renderMenu() }
         <Segment raised style={{margin: '15px', 'width': '100%'}}>
-          { this.renderHeader() }
-          { this.renderRouter() }
+          { !authenticated && (<Loader active>Checking credentials</Loader>) }
+          { authenticated && this.renderHeader() && this.renderRouter() }
         </Segment>
       </div>
     )
