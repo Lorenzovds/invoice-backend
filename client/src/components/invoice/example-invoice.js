@@ -7,6 +7,7 @@ import moment from 'moment'
 import { map, find, reduce, slice, each } from 'lodash'
 import '../../App.css'
 import '../../invoice.css'
+import typeOptions from '../../constants/invoiceTypes'
 
 const INTRO_CAP = 7
 const PAGE_CAP = 17
@@ -43,7 +44,7 @@ class ExampleInvoice extends Component {
     const dropdownOptions = map(invoices, invoice => {
       const { headers, type } = invoice
       const { company, invoiceNumber } = headers
-      const displayType = this.getDisplayType(type)
+      const { text: displayType } = this.getDisplayType(type)
       return {
         text: `${company} - ${invoiceNumber} (${displayType})`,
         value: invoice._id
@@ -73,11 +74,7 @@ class ExampleInvoice extends Component {
   }
 
   getDisplayType (type) {
-    const typeMap = {
-      'offer': 'Offerte',
-      'invoice': 'Factuur'
-    }
-    return typeMap[type]
+    return find(typeOptions, { value: type }, { text: 'unknown type' })
   }
 
   handleDropdownChange (e, {value}) {
@@ -102,7 +99,7 @@ class ExampleInvoice extends Component {
     const { headers, type } = selectedInvoice
     const { company, invoiceNumber } = headers
     const doc = new JsPdf('p', 'pt', 'a4')
-    const displayType = this.getDisplayType(type)
+    const { text: displayType } = this.getDisplayType(type)
 
     domtoimage.toPng(invoiceDOM, { quality: 1 })
       .then(async (dataUrl) => {

@@ -6,6 +6,8 @@ import moment from 'moment'
 import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
 import '../../App.css'
+import typeOptions from '../../constants/invoiceTypes'
+
 const taxOptions = [
   {
     text: '0',
@@ -41,17 +43,6 @@ const headerDefaults = {
   street: '',
   town: ''
 }
-
-const typeOptions = [
-  {
-    text: 'Factuur',
-    value: 'invoice'
-  },
-  {
-    text: 'Offerte',
-    value: 'offer'
-  }
-]
 
 const numericalEntries = ['amount', 'price', 'tax']
 
