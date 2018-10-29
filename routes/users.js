@@ -1,6 +1,7 @@
 const express = require('express')
 const router = express.Router()
 const httpError = require('http-errors')
+const { users } = require('../config')
 
 const oktaClient = require('../lib/oktaClient').client
 
@@ -9,12 +10,13 @@ const oktaClient = require('../lib/oktaClient').client
  */
 router.post('/', (req, res, next) => {
   if (!req.body) return next(httpError(400))
+  const { firstName, lastName, email } = req.body
   const newUser = {
     profile: {
-      firstName: req.body.firstName,
-      lastName: req.body.lastName,
-      email: req.body.email,
-      login: req.body.email
+      firstName: firstName,
+      lastName: lastName,
+      email: email,
+      login: email
     },
     credentials: {
       password: {
@@ -25,6 +27,13 @@ router.post('/', (req, res, next) => {
   oktaClient.createUser(newUser)
     .then(user => res.status(201).send(user))
     .catch(err => next(httpError(400, err)))
+})
+
+router.get('/:id', (req, res, next) => {
+  const { id } = req.params
+  const user = users[id]
+  if (!user) return res.status(400).send('user not configured')
+  return res.status(200).send(user)
 })
 
 module.exports = router
