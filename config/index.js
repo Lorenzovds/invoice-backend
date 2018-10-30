@@ -1,5 +1,6 @@
 const fs = require('fs')
 const path = require('path')
+
 let credentials
 // use hardcoded values for local development
 if (fs.existsSync(path.resolve(`${__dirname}/config.js`))) {
@@ -8,11 +9,13 @@ if (fs.existsSync(path.resolve(`${__dirname}/config.js`))) {
   credentials = process.env
 }
 
+const users = require('./users.js')
+
 const { orgUrl, token, mongoDB } = credentials
 
 module.exports = {
   orgUrl: orgUrl,
   token: token,
   mongoDB: mongoDB,
-  users: require('./users.js')
+  users
 }
