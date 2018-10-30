@@ -6,7 +6,7 @@ module.exports = {
   mongoDB: 'mongodb://app:app@ds121889.mlab.com:21889/invoicer',
   users: {
     '00ue76zz5chMI4fio0h7': {
-      name: 'Van De Sijpe Lorenzo',
+      name: 'Van Doorsselaere Kevin',
       street: 'Bieststraat',
       number: '68',
       town: 'kalken',
@@ -18,6 +18,21 @@ module.exports = {
       bic:'sGEBABEBB',
       logo: 'kevinvd',
       terms: defaultTerms
-    }
+    },
+    '00uh2j3izk2sbDj3N0h7':
+      {
+        name: 'Tegels De Troyer',
+        street: 'Krommewegel',
+        number: '3',
+        town: 'Wetteren',
+        zipcode: '9230',
+        phone: '0479 40 05 84',
+        mail: 'tegelsdetroyer@telenet.be',
+        taxNr: 'BE 0888.164.068',
+        iban: 'BE66 0015 1596 8843',
+        bic:'GEBABEBB',
+        logo: 'filipdt',
+        terms: defaultTerms
+      }
   }
 }

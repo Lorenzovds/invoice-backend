@@ -10,7 +10,7 @@ const oktaClient = require('../lib/oktaClient').client
  */
 router.post('/', (req, res, next) => {
   if (!req.body) return next(httpError(400))
-  const { firstName, lastName, email } = req.body
+  const { firstName, lastName, email, password } = req.body
   const newUser = {
     profile: {
       firstName: firstName,
@@ -20,7 +20,7 @@ router.post('/', (req, res, next) => {
     },
     credentials: {
       password: {
-        value: req.body.password
+        value: password
       }
     }
   }
