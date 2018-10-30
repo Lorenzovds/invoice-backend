@@ -14,6 +14,22 @@ module.exports = {
   orgUrl: 'okta_url',
   token: 'okta_token',
   mongoDB: 'mongodb_url' // this is only used when running in production mode
+  users: {
+    uid_of_user: {
+      name: '',
+      street: '',
+      number: '',
+      town: '',
+      zipcode: '',
+      phone: '',
+      mail: '',
+      taxNr: '',
+      iban: '',
+      bic: '',
+      logo: '',
+      terms: defaultTerms
+    }
+  }
 }
 ```
 
@@ -38,7 +54,7 @@ Either in one terminal or in two terminals.
 * Two terminals:
   ```bash
     yarn server
-    yarn client
+    cd client && yarn client
   ```
 
 ### TODO
