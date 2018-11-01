@@ -26,7 +26,7 @@ module.exports = {
     taxNr: 'BE ****.***.***',
     iban: 'BE67 **** **** ****',
     bic: 'test bic',
-    logo: 'test',
+    logo: 'kevinvd',
     terms: defaultTerms
   },
   '00uh2j3izk2sbDj3N0h7':

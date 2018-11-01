@@ -13,7 +13,8 @@ const invoiceSchema = new Schema({
   headers: {},
   user: {},
   date: { type: Date, default: new Date() },
-  type: { type: String, required: true }
+  type: { type: String, required: true },
+  description: { type: String, default: '' }
 })
 
 const Invoice = mongoose.model('Invoice', invoiceSchema)

@@ -4,7 +4,7 @@ import { Segment, Image, Dropdown, Container, Button, Table, Header, Message } f
 import domtoimage from '../../lib/dom-to-image.min.js'
 import JsPdf from 'jspdf'
 import moment from 'moment'
-import { map, find, reduce, slice, each } from 'lodash'
+import { map, find, reduce, slice, each, get } from 'lodash'
 import '../../App.css'
 import '../../invoice.css'
 import typeOptions from '../../constants/invoiceTypes'
@@ -70,7 +70,7 @@ class ExampleInvoice extends Component {
         value: invoice._id
       }
     })
-
+    const shouldRenderDescription = get(selectedInvoice, 'description')
     return (
       <Segment basic loading={loading}>
         <Container textAlign='right' style={{display: 'table', marginLeft: 'auto'}}>
@@ -79,11 +79,12 @@ class ExampleInvoice extends Component {
         </Container>
         <Container className='invoice' style={{ minWidth: '595.28px', width: '595.28px', height: 'auto' }}>
           <div ref={(input) => { this.invoiceDOM = input }} >
-            { this.renderInvoiceHeader() }
-            { this.renderInvoiceTable(0) }
+            { selectedInvoice && this.renderInvoiceHeader() }
+            { selectedInvoice && shouldRenderDescription && this.renderInvoiceDescription()}
+            { selectedInvoice && !shouldRenderDescription && this.renderInvoiceTable(0) }
           </div>
           <div>
-            { this.renderPagedInvoiceTables() }
+            { selectedInvoice && this.renderPagedInvoiceTables(shouldRenderDescription) }
           </div>
           <div ref={(input) => { this.generalDOM = input }}>
             { this.getGeneralInfo() }
@@ -109,9 +110,12 @@ class ExampleInvoice extends Component {
   handleDropdownChange (e, {value}) {
     const { invoices } = this.state
     const selectedInvoice = find(invoices, {'_id': value})
+    const { description } = selectedInvoice
     let currentPage = 0
+    // if description exists don't limit first entries to less
+    const INTRO_LIMIT = description ? PAGE_CAP : INTRO_CAP
     const pagedInvoices = reduce(selectedInvoice.entries, (acc, entry, index) => {
-      if (index === (PAGE_CAP * currentPage + INTRO_CAP)) {
+      if (index === (PAGE_CAP * currentPage + INTRO_LIMIT)) {
         ++currentPage
         acc[currentPage] = []
       }
@@ -225,31 +229,40 @@ class ExampleInvoice extends Component {
   }
 
   renderPagedInvoiceTables () {
-    const { pagedInvoices } = this.state
+    const { pagedInvoices, selectedInvoice } = this.state
+    const { description } = selectedInvoice
+    const SLICE_INDEX = description ? 0 : 1
     if (!pagedInvoices) return null
-    const sliced = slice(pagedInvoices, 1)
+    const sliced = slice(pagedInvoices, SLICE_INDEX)
     return map(sliced, (part, index) => {
       return (
         <div key={index} ref={(input) => { this.invoicePagesDOM.push(input) }}>
-          { this.renderInvoiceTable(++index) }
+          { this.renderInvoiceTable(index, sliced) }
         </div>
       )
     })
   }
 
-  renderInvoiceTable (index) {
-    const { selectedInvoice, pagedInvoices } = this.state
-    if (!selectedInvoice) return null
-    const invoicesToUse = pagedInvoices[index]
+  renderInvoiceTable (index, invoiceEntries) {
+    const allInvoiceEntries = invoiceEntries || this.state.pagedInvoices || []
+    const invoicesToUse = allInvoiceEntries[index]
     if (!invoicesToUse) return null
     return (
       <div style={{paddingLeft: '40px', paddingRight: '40px', paddingTop: '40px'}}>
         <Table celled>
           {this.renderTableHeader()}
-          {this.renderTableBody(invoicesToUse, index)}
+          {this.renderTableBody(invoicesToUse, index, allInvoiceEntries)}
         </Table>
       </div>
     )
+  }
+
+  renderInvoiceDescription () {
+    const { selectedInvoice } = this.state
+    const { description = '' } = selectedInvoice
+    return <div style={{paddingLeft: '40px', paddingRight: '40px', paddingTop: '40px'}}>
+      { description }
+    </div>
   }
 
   renderTableHeader () {
@@ -266,15 +279,13 @@ class ExampleInvoice extends Component {
     )
   }
 
-  renderTableBody (entries, index) {
-    const { pagedInvoices } = this.state
-
+  renderTableBody (entries, index, allInvoiceEntries) {
     return (
       <Table.Body>
         { map(entries, this.renderTableEntry.bind(this))}
-        { ((pagedInvoices.length - 1) === index) && (this.renderTotalExclTaxEntry(entries))}
-        { ((pagedInvoices.length - 1) === index) && (this.renderTotalTax(entries))}
-        { ((pagedInvoices.length - 1) === index) && (this.renderTotalEntry(entries))}
+        { ((allInvoiceEntries.length - 1) === index) && (this.renderTotalExclTaxEntry(entries))}
+        { ((allInvoiceEntries.length - 1) === index) && (this.renderTotalTax(entries))}
+        { ((allInvoiceEntries.length - 1) === index) && (this.renderTotalEntry(entries))}
       </Table.Body>
     )
   }
