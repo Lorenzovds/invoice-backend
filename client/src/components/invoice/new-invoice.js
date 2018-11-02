@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { withRouter } from 'react-router'
 import { Header, Form, Loader, Table, Button,
-  Message, Segment, Dropdown, TextArea, Dimmer, Popup } from 'semantic-ui-react'
+  Message, Segment, Dropdown, TextArea, Dimmer, Popup, Icon } from 'semantic-ui-react'
 import { map, cloneDeep, reduce, includes, every, forEach } from 'lodash'
 import moment from 'moment'
 import DatePicker from 'react-datepicker'
@@ -141,7 +141,6 @@ class NewInvoice extends Component {
         <div>
           <Button disabled={loading || loadingError} loading={this.state.saving}size='medium' floated='right' content={edit ? 'aanpassen' : 'nieuw'} positive onClick={() => this.saveInvoice()} />
         </div>
-        <Popup on='click' trigger={<Button icon='question' />} content='Deze tekst komt op de eerste pagina voor de factuur tabel.' />
       </Segment>
     )
   }
@@ -190,7 +189,7 @@ class NewInvoice extends Component {
     return (
       <Form>
         <Form.Field>
-          <label>Extra informatie</label>
+          <label>Extra informatie <Popup style={{height: 'auto'}} trigger={<Icon color='green' name='question' />} content='Deze tekst komt op de eerste pagina voor de factuur tabel.' /></label>
           <TextArea autoHeight value={this.state.description} rows={10} placeholder='extra beschrijving' style={{ width: '45%' }} onChange={this.handleDescriptionChange.bind(this)} />
         </Form.Field>
       </Form>
