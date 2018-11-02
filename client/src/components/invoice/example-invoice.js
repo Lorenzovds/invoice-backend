@@ -154,12 +154,17 @@ class ExampleInvoice extends Component {
         })
       })
       .then(() => {
-        return domtoimage.toPng(generalDOM, { quality: 1 })
-          .then(generalUrl => {
-            doc.addPage()
-            doc.addImage(generalUrl, 'PNG', 0, 0, generalDOM.clientWidth, generalDOM.clientHeight)
-            doc.save(`${displayType}_${company}_${invoiceNumber}`)
-          })
+        if (generalDOM) {
+          return domtoimage.toPng(generalDOM, { quality: 1 })
+            .then(generalUrl => {
+              doc.addPage()
+              doc.addImage(generalUrl, 'PNG', 0, 0, generalDOM.clientWidth, generalDOM.clientHeight)
+            })
+        }
+        return Promise.resolve()
+      })
+      .then(() => {
+        doc.save(`${displayType}_${company}_${invoiceNumber}`)
       })
       .catch(function (error) {
         console.error('oops, something went wrong!', error)
