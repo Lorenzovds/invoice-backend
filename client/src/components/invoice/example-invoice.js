@@ -59,8 +59,16 @@ class ExampleInvoice extends Component {
       })
   }
 
+  componentDidUpdate () {
+    const { exportLoading, selectedInvoice } = this.state
+
+    if (exportLoading && selectedInvoice) this.exportInvoice()
+  }
+
   render () {
-    const { loading, invoices, selectedInvoice, loadingError, user } = this.state
+    // reset the old pages before rendering new ones
+    this.invoicePagesDOM = []
+    const { loading, invoices, selectedInvoice, loadingError, user, exportLoading } = this.state
     const { terms } = user
     const dropdownOptions = map(invoices, invoice => {
       const { headers, type } = invoice
@@ -76,8 +84,17 @@ class ExampleInvoice extends Component {
       <Segment basic loading={loading}>
         <Container textAlign='right' style={{display: 'table', marginLeft: 'auto'}}>
           <Dropdown selection onChange={this.handleDropdownChange.bind(this)} options={dropdownOptions} />
-          <Button content='Download' disabled={!selectedInvoice} primary onClick={this.handleExport.bind(this)} />
+          <Button loading={exportLoading} content='Download' disabled={!selectedInvoice} primary onClick={this.handleExport.bind(this)} />
         </Container>
+        {
+          (loadingError) && (
+            <Message
+              negative>
+              <Message.Header>Oeps</Message.Header>
+              <Message.Content>{loadingError}</Message.Content>
+            </Message>
+          )
+        }
         <Container className='invoice' style={{ minWidth: '595.28px', width: '595.28px', height: 'auto' }}>
           <div ref={(input) => { this.invoiceDOM = input }} >
             { selectedInvoice && this.renderInvoiceHeader() }
@@ -94,15 +111,6 @@ class ExampleInvoice extends Component {
             </div>
           }
         </Container>
-        {
-          (loadingError) && (
-            <Message
-              negative>
-              <Message.Header>Oeps</Message.Header>
-              <Message.Content>{loadingError}</Message.Content>
-            </Message>
-          )
-        }
       </Segment>
     )
   }
@@ -131,6 +139,10 @@ class ExampleInvoice extends Component {
   }
 
   handleExport () {
+    this.setState({ exportLoading: true })
+  }
+
+  exportInvoice () {
     const { invoiceDOM, generalDOM, invoicePagesDOM, state } = this
     const { selectedInvoice } = state
     const { headers, type } = selectedInvoice
@@ -165,8 +177,13 @@ class ExampleInvoice extends Component {
       })
       .then(() => {
         doc.save(`${displayType}_${company}_${invoiceNumber}`)
+        this.setState({ exportLoading: false })
       })
-      .catch(function (error) {
+      .catch((error) => {
+        this.setState({
+          exportLoading: false,
+          loadingError: 'Kon niet downloaden, herlaad pagina en probeer nogmaals'
+        })
         console.error('oops, something went wrong!', error)
       })
   }
@@ -245,7 +262,7 @@ class ExampleInvoice extends Component {
     const sliced = slice(pagedInvoices, SLICE_INDEX)
     return map(sliced, (part, index) => {
       return (
-        <div key={index} ref={(input) => { this.invoicePagesDOM.push(input) }}>
+        <div key={index} ref={(input) => { if (input) this.invoicePagesDOM.push(input) }}>
           { this.renderInvoiceTable(index, sliced) }
         </div>
       )
