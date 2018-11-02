@@ -41,7 +41,6 @@ module.exports = {
       taxNr: 'BE 0888.164.068',
       iban: 'BE66 0015 1596 8843',
       bic: 'GEBABEBB',
-      logo: 'filipdt',
-      terms: defaultTerms
+      logo: 'filipdt2'
     }
 }

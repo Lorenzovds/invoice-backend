@@ -10,7 +10,7 @@ import '../../invoice.css'
 import typeOptions from '../../constants/invoiceTypes'
 
 const INTRO_CAP = 7
-const PAGE_CAP = 17
+const PAGE_CAP = 18
 
 class ExampleInvoice extends Component {
   constructor (props) {
@@ -60,7 +60,8 @@ class ExampleInvoice extends Component {
   }
 
   render () {
-    const { loading, invoices, selectedInvoice, loadingError } = this.state
+    const { loading, invoices, selectedInvoice, loadingError, user } = this.state
+    const { terms } = user
     const dropdownOptions = map(invoices, invoice => {
       const { headers, type } = invoice
       const { company, invoiceNumber } = headers
@@ -86,9 +87,12 @@ class ExampleInvoice extends Component {
           <div>
             { selectedInvoice && this.renderPagedInvoiceTables(shouldRenderDescription) }
           </div>
-          <div ref={(input) => { this.generalDOM = input }}>
-            { this.getGeneralInfo() }
-          </div>
+          {
+            terms &&
+            <div ref={(input) => { this.generalDOM = input }}>
+              { this.getGeneralInfo() }
+            </div>
+          }
         </Container>
         {
           (loadingError) && (
@@ -260,7 +264,7 @@ class ExampleInvoice extends Component {
   renderInvoiceDescription () {
     const { selectedInvoice } = this.state
     const { description = '' } = selectedInvoice
-    return <div style={{paddingLeft: '40px', paddingRight: '40px', paddingTop: '40px'}}>
+    return <div style={{maxHeight: 375, overflow: 'hidden', paddingLeft: '40px', paddingRight: '40px', paddingTop: '40px', whiteSpace: 'pre-wrap'}}>
       { description }
     </div>
   }
