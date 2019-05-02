@@ -11,7 +11,7 @@ module.exports = {
     mail: 'Kevin_van_Doorsselaere@hotmail.com',
     taxNr: 'BE 0690.876.560',
     iban: 'BE67 0018 3341 5487',
-    bic: 'sGEBABEBB',
+    bic: 'GEBABEBB',
     logo: 'kevinvd',
     terms: defaultTerms
   },
