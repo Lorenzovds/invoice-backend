@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "private": true,
   "engines": {
-    "node": "9.10.0"
+    "node": "12.11.0"
   },
   "scripts": {
     "start": "NODE_ENV=production node ./bin/www",
@@ -19,7 +19,7 @@
       "jest": true
     },
     "ignore": [
-      "/client/build"
+      "/client"
     ]
   },
   "dependencies": {
@@ -43,6 +43,6 @@
   "devDependencies": {
     "concurrently": "^3.5.1",
     "husky": "^0.14.3",
-    "standard": "^11.0.0"
+    "standard": "^14.3.1"
   }
 }
