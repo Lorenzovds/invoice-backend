@@ -30,7 +30,7 @@ export default withAuth(class LoginForm extends React.Component {
         sessionToken: res.sessionToken
       }))
       .catch(err => {
-        this.setState({error: err.message})
+        this.setState({ error: err.message })
         console.log(err.statusCode + ' error', err)
       })
   }
@@ -58,7 +58,8 @@ export default withAuth(class LoginForm extends React.Component {
         <Grid
           textAlign='center'
           style={{ height: '100%' }}
-          verticalAlign='middle'>
+          verticalAlign='middle'
+        >
           <Grid.Column style={{ maxWidth: 450 }}>
             <Header as='h2' textAlign='center'>
               <Icon name='key' />
@@ -66,7 +67,8 @@ export default withAuth(class LoginForm extends React.Component {
             </Header>
             <Form
               size='large'
-              onSubmit={this.handleSubmit.bind(this)}>
+              onSubmit={this.handleSubmit.bind(this)}
+            >
               <Segment stacked>
                 <Form.Input
                   fluid
@@ -91,7 +93,8 @@ export default withAuth(class LoginForm extends React.Component {
               {
                 errorMessage && (
                   <Message
-                    negative>
+                    negative
+                  >
                     <Message.Header>Foute gebruikersnaam of wachtwoord</Message.Header>
                   </Message>
                 )

@@ -14,6 +14,7 @@ class InvoicesContainer extends Component {
     this.setActiveMenu('all')
     this.auth = props.auth
   }
+
   render () {
     return (
       <Switch>
@@ -52,7 +53,7 @@ class InvoicesContainer extends Component {
   getUserInfo () {
     const { auth } = this
     return Promise.all([auth.getUser(), auth.getAccessToken()])
-      .then(([{sub: userId}, accessToken]) => {
+      .then(([{ sub: userId }, accessToken]) => {
         return axios.get(`/api/users/${userId}`, {
           headers: { accessToken }
         })

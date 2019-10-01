@@ -1,7 +1,9 @@
 import React, { Component } from 'react'
 import { withRouter } from 'react-router'
-import { Header, Form, Loader, Table, Button,
-  Message, Segment, Dropdown, TextArea, Dimmer, Popup, Icon } from 'semantic-ui-react'
+import {
+  Header, Form, Loader, Table, Button,
+  Message, Segment, Dropdown, TextArea, Dimmer, Popup, Icon
+} from 'semantic-ui-react'
 import { map, cloneDeep, reduce, includes, every, forEach } from 'lodash'
 import moment from 'moment'
 import DatePicker from 'react-datepicker'
@@ -85,8 +87,8 @@ class NewInvoice extends Component {
         })
       })
       .catch(() => {
-        this.setState({loading: false})
-        this.setState({loadingError: 'Kon factuur niet inladen'})
+        this.setState({ loading: false })
+        this.setState({ loadingError: 'Kon factuur niet inladen' })
       })
   }
 
@@ -117,13 +119,14 @@ class NewInvoice extends Component {
         <Header as='h4'>
           <Dropdown onChange={this.handleTypeChange.bind(this)} selection value={type} options={typeOptions} />
         </Header>
-        <div>{ this.headerForm() }</div>
-        <div style={{paddingBottom: '14px'}}>{ this.descriptionField() }</div>
-        <div>{ this.renderTable() }</div>
+        <div>{this.headerForm()}</div>
+        <div style={{ paddingBottom: '14px' }}>{this.descriptionField()}</div>
+        <div>{this.renderTable()}</div>
         {
           (errorMessage || loadingError) && (
             <Message
-              negative>
+              negative
+            >
               <Message.Header>Oeps</Message.Header>
               <Message.Content>{errorMessage || loadingError}</Message.Content>
             </Message>
@@ -132,14 +135,15 @@ class NewInvoice extends Component {
         {
           (positiveMessage) && (
             <Message
-              positive>
+              positive
+            >
               <Message.Header>Success</Message.Header>
               <Message.Content>{positiveMessage}</Message.Content>
             </Message>
           )
         }
         <div>
-          <Button disabled={loading || loadingError} loading={this.state.saving}size='medium' floated='right' content={edit ? 'aanpassen' : 'nieuw'} positive onClick={() => this.saveInvoice()} />
+          <Button disabled={loading || loadingError} loading={this.state.saving} size='medium' floated='right' content={edit ? 'aanpassen' : 'nieuw'} positive onClick={() => this.saveInvoice()} />
         </div>
       </Segment>
     )
@@ -162,19 +166,19 @@ class NewInvoice extends Component {
           <Form.Field required width={2}>
             <label>Factuur datum</label>
             <DatePicker
-              style={{width: '100%'}}
+              style={{ width: '100%' }}
               selected={invoiceDate}
               onChange={this.setInvoiceDate.bind(this)}
-              dateFormat={'DD/MM/YYYY'}
+              dateFormat='DD/MM/YYYY'
             />
           </Form.Field>
           <Form.Field required width={2}>
             <label>Vervaldag</label>
             <DatePicker
-              style={{width: '100%'}}
+              style={{ width: '100%' }}
               selected={expireDate}
               onChange={this.setExpireDate.bind(this)}
-              dateFormat={'DD/MM/YYYY'}
+              dateFormat='DD/MM/YYYY'
             />
           </Form.Field>
         </Form.Group>
@@ -189,7 +193,7 @@ class NewInvoice extends Component {
     return (
       <Form>
         <Form.Field>
-          <label>Extra informatie <Popup style={{height: 'auto'}} trigger={<Icon color='green' name='question' />} content='Deze tekst komt op de eerste pagina voor de factuur tabel.' /></label>
+          <label>Extra informatie <Popup style={{ height: 'auto' }} trigger={<Icon color='green' name='question' />} content='Deze tekst komt op de eerste pagina voor de factuur tabel.' /></label>
           <TextArea autoHeight value={this.state.description} rows={10} placeholder='extra beschrijving' style={{ width: '45%' }} onChange={this.handleDescriptionChange.bind(this)} />
         </Form.Field>
       </Form>
@@ -206,12 +210,12 @@ class NewInvoice extends Component {
     this.setState({ headers: newHeaders })
   }
 
-  handleHeaderChange (e, {name, value}) {
+  handleHeaderChange (e, { name, value }) {
     const newHeaders = Object.assign(this.state.headers, { [name]: value })
     this.setState({ headers: newHeaders })
   }
 
-  handleTypeChange (e, {value}) {
+  handleTypeChange (e, { value }) {
     this.setState({ type: value })
   }
 
@@ -221,7 +225,7 @@ class NewInvoice extends Component {
 
   renderTable () {
     return (
-      <Table celled style={{marginBottom: '30px'}}>
+      <Table celled style={{ marginBottom: '30px' }}>
         {this.renderTableHeader()}
         {this.renderTableBody()}
         {this.renderTableFooter()}
@@ -248,8 +252,8 @@ class NewInvoice extends Component {
     const { entries } = this.state
     return (
       <Table.Body>
-        { map(entries, this.renderTableEntry.bind(this))}
-        { this.renderTotalEntry(entries)}
+        {map(entries, this.renderTableEntry.bind(this))}
+        {this.renderTotalEntry(entries)}
       </Table.Body>
     )
   }
@@ -274,7 +278,7 @@ class NewInvoice extends Component {
           </Table.HeaderCell>
           <Table.HeaderCell textAlign='center'>
             <Form onSubmit={this.handleEntrySubmit.bind(this)}>
-              <Button disabled={loading} style={{'height': '50%'}} positive circular icon='plus square outline' />
+              <Button disabled={loading} style={{ height: '50%' }} positive circular icon='plus square outline' />
             </Form>
           </Table.HeaderCell>
           <Table.HeaderCell />
@@ -294,7 +298,7 @@ class NewInvoice extends Component {
         <Table.Cell>{tax}</Table.Cell>
         <Table.Cell>{totalPrice}</Table.Cell>
         <Table.Cell>
-          <Button style={{'height': '50%'}} negative circular icon='trash' onClick={() => this.deleteEntry(index)} />
+          <Button style={{ height: '50%' }} negative circular icon='trash' onClick={() => this.deleteEntry(index)} />
         </Table.Cell>
       </Table.Row>
     )
@@ -311,8 +315,8 @@ class NewInvoice extends Component {
   renderTotalEntry (entries) {
     return (
       <Table.Row textAlign='right'>
-        <Table.Cell colSpan='6' positive style={{'fontSize': '150%', paddingTop: '20px', 'borderTop': '2px solid black'}}>
-          { this.getTotalAmount(entries).toFixed(2)}
+        <Table.Cell colSpan='6' positive style={{ fontSize: '150%', paddingTop: '20px', borderTop: '2px solid black' }}>
+          {this.getTotalAmount(entries).toFixed(2)}
         </Table.Cell>
       </Table.Row>
     )
@@ -331,17 +335,17 @@ class NewInvoice extends Component {
     return parseFloat(((parseFloat(amount, 10) * parseFloat(price, 10)) * (1 + (parseFloat(tax, 10) / 100))).toFixed(2))
   }
 
-  handleEntryChange (e, {name, value}) {
+  handleEntryChange (e, { name, value }) {
     const newEntry = Object.assign(this.state.entry, { [name]: value })
     this.setState({ entry: newEntry })
   }
 
   handleEntrySubmit () {
-    this.setState({errorMessage: ''})
+    this.setState({ errorMessage: '' })
     const { entry, entries } = this.state
     const validEntry = this.validateEntry(entry)
     if (!validEntry) {
-      this.setState({errorMessage: 'zorg dat er cijfers worden ingevuld waar nodig'})
+      this.setState({ errorMessage: 'zorg dat er cijfers worden ingevuld waar nodig' })
       return
     }
     entries.push(entry)
@@ -406,7 +410,7 @@ class NewInvoice extends Component {
     }
     const parsedHeaders = this.parseHeadersOut(headers)
     const parsedEntries = this.parseEntriesOut(entries)
-    const body = Object.assign({}, {entries: parsedEntries}, {headers: parsedHeaders}, {type}, {description})
+    const body = Object.assign({}, { entries: parsedEntries }, { headers: parsedHeaders }, { type }, { description })
     const savePromise = edit ? this.updateInvoice(body, id) : this.postInvoice(body)
 
     savePromise

@@ -55,7 +55,7 @@ class ExampleInvoice extends Component {
       })
       .catch(() => {
         this.setState({ loading: false })
-        console.error(`failed to load necessary info`)
+        console.error('failed to load necessary info')
       })
   }
 
@@ -82,33 +82,34 @@ class ExampleInvoice extends Component {
     const shouldRenderDescription = get(selectedInvoice, 'description')
     return (
       <Segment basic loading={loading}>
-        <Container textAlign='right' style={{display: 'table', marginLeft: 'auto'}}>
+        <Container textAlign='right' style={{ display: 'table', marginLeft: 'auto' }}>
           <Dropdown selection onChange={this.handleDropdownChange.bind(this)} options={dropdownOptions} />
           <Button loading={exportLoading} content='Download' disabled={!selectedInvoice} primary onClick={this.handleExport.bind(this)} />
         </Container>
         {
           (loadingError) && (
             <Message
-              negative>
+              negative
+            >
               <Message.Header>Oeps</Message.Header>
               <Message.Content>{loadingError}</Message.Content>
             </Message>
           )
         }
         <Container className='invoice' style={{ minWidth: '595.28px', width: '595.28px', height: 'auto' }}>
-          <div ref={(input) => { this.invoiceDOM = input }} >
-            { selectedInvoice && this.renderInvoiceHeader() }
-            { selectedInvoice && shouldRenderDescription && this.renderInvoiceDescription()}
-            { selectedInvoice && !shouldRenderDescription && this.renderInvoiceTable(0) }
+          <div ref={(input) => { this.invoiceDOM = input }}>
+            {selectedInvoice && this.renderInvoiceHeader()}
+            {selectedInvoice && shouldRenderDescription && this.renderInvoiceDescription()}
+            {selectedInvoice && !shouldRenderDescription && this.renderInvoiceTable(0)}
           </div>
           <div>
-            { selectedInvoice && this.renderPagedInvoiceTables(shouldRenderDescription) }
+            {selectedInvoice && this.renderPagedInvoiceTables(shouldRenderDescription)}
           </div>
           {
             terms &&
-            <div ref={(input) => { this.generalDOM = input }}>
-              { this.getGeneralInfo() }
-            </div>
+              <div ref={(input) => { this.generalDOM = input }}>
+                {this.getGeneralInfo()}
+              </div>
           }
         </Container>
       </Segment>
@@ -119,9 +120,9 @@ class ExampleInvoice extends Component {
     return find(typeOptions, { value: type }, { text: 'unknown type' })
   }
 
-  handleDropdownChange (e, {value}) {
+  handleDropdownChange (e, { value }) {
     const { invoices } = this.state
-    const selectedInvoice = find(invoices, {'_id': value})
+    const selectedInvoice = find(invoices, { _id: value })
     const { description } = selectedInvoice
     let currentPage = 0
     // if description exists don't limit first entries to less
@@ -155,12 +156,12 @@ class ExampleInvoice extends Component {
         doc.addImage(dataUrl, 'PNG', 0, 0, invoiceDOM.clientWidth, invoiceDOM.clientHeight)
         const generatePages = await Promise.all(map(invoicePagesDOM, async (page, index) => {
           const pageUrl = await domtoimage.toPng(page, { quality: 1 })
-          return {pageUrl, page}
+          return { pageUrl, page }
         }))
         return generatePages
       })
       .then(pages => {
-        each(pages, ({pageUrl, page}) => {
+        each(pages, ({ pageUrl, page }) => {
           doc.addPage()
           doc.addImage(pageUrl, 'PNG', 0, 0, page.clientWidth, page.clientHeight)
         })
@@ -211,9 +212,9 @@ class ExampleInvoice extends Component {
     const { company, street, town, btw, invoiceNumber, invoiceDate, expireDate } = headers
     return (
       <div>
-        <Container style={{display: 'inline-flex'}}>
-          <Image style={{width: '200px', height: '100%'}} src={`/${userLogo}.png`} size='tiny' />
-          <Container textAlign='left' style={{height: 'auto', paddingTop: '40px', paddingLeft: '10px'}}>
+        <Container style={{ display: 'inline-flex' }}>
+          <Image style={{ width: '200px', height: '100%' }} src={`/${userLogo}.png`} size='tiny' />
+          <Container textAlign='left' style={{ height: 'auto', paddingTop: '40px', paddingLeft: '10px' }}>
             <p style={headerStyle}> {userName}</p>
             <p style={headerStyle}> {userStreet} {userStreetNumber}</p>
             <p style={headerStyle}> {userZip} {userTown}</p>
@@ -224,15 +225,15 @@ class ExampleInvoice extends Component {
             <p style={headerStyle}><b>BIC:</b> {userBic}</p>
           </Container>
         </Container>
-        <Segment className='invoice' basic floated='right' style={{marginRight: '100px', marginBottom: '0px', width: 'auto'}}>
+        <Segment className='invoice' basic floated='right' style={{ marginRight: '100px', marginBottom: '0px', width: 'auto' }}>
           <Header as='h4'>Klantinfo</Header>
           <p>{company}</p>
           <p style={headerStyle}>{street}</p>
           <p style={headerStyle}>{town}</p>
         </Segment>
-        <Container style={{display: 'inline-flex', paddingLeft: '40px', paddingRight: '40px', paddingTop: '10px'}} textAlign='left'>
+        <Container style={{ display: 'inline-flex', paddingLeft: '40px', paddingRight: '40px', paddingTop: '10px' }} textAlign='left'>
           <Container>
-            <Table style={{width: '100%'}}>
+            <Table style={{ width: '100%' }}>
               <Table.Body>
                 <Table.Row>
                   <Table.Cell>BTW-nummer klant</Table.Cell>
@@ -263,7 +264,7 @@ class ExampleInvoice extends Component {
     return map(sliced, (part, index) => {
       return (
         <div key={index} ref={(input) => { if (input) this.invoicePagesDOM.push(input) }}>
-          { this.renderInvoiceTable(index, sliced) }
+          {this.renderInvoiceTable(index, sliced)}
         </div>
       )
     })
@@ -274,7 +275,7 @@ class ExampleInvoice extends Component {
     const invoicesToUse = allInvoiceEntries[index]
     if (!invoicesToUse) return null
     return (
-      <div style={{paddingLeft: '40px', paddingRight: '40px', paddingTop: '40px'}}>
+      <div style={{ paddingLeft: '40px', paddingRight: '40px', paddingTop: '40px' }}>
         <Table celled>
           {this.renderTableHeader()}
           {this.renderTableBody(invoicesToUse, index, allInvoiceEntries)}
@@ -286,9 +287,11 @@ class ExampleInvoice extends Component {
   renderInvoiceDescription () {
     const { selectedInvoice } = this.state
     const { description = '' } = selectedInvoice
-    return <div style={{maxHeight: 375, overflow: 'hidden', paddingLeft: '40px', paddingRight: '40px', paddingTop: '40px', whiteSpace: 'pre-wrap'}}>
-      { description }
-    </div>
+    return (
+      <div style={{ maxHeight: 375, overflow: 'hidden', paddingLeft: '40px', paddingRight: '40px', paddingTop: '40px', whiteSpace: 'pre-wrap' }}>
+        {description}
+      </div>
+    )
   }
 
   renderTableHeader () {
@@ -308,10 +311,10 @@ class ExampleInvoice extends Component {
   renderTableBody (entries, index, allInvoiceEntries) {
     return (
       <Table.Body>
-        { map(entries, this.renderTableEntry.bind(this))}
-        { ((allInvoiceEntries.length - 1) === index) && (this.renderTotalExclTaxEntry(entries))}
-        { ((allInvoiceEntries.length - 1) === index) && (this.renderTotalTax(entries))}
-        { ((allInvoiceEntries.length - 1) === index) && (this.renderTotalEntry(entries))}
+        {map(entries, this.renderTableEntry.bind(this))}
+        {((allInvoiceEntries.length - 1) === index) && (this.renderTotalExclTaxEntry(entries))}
+        {((allInvoiceEntries.length - 1) === index) && (this.renderTotalTax(entries))}
+        {((allInvoiceEntries.length - 1) === index) && (this.renderTotalEntry(entries))}
       </Table.Body>
     )
   }
@@ -332,10 +335,10 @@ class ExampleInvoice extends Component {
 
   renderTotalTax (entries) {
     return (
-      <Table.Row textAlign='right' style={{paddingTop: '40px', 'borderTop': '2px solid black', 'backgroundColor': 'rgba(217,219,188, 0.6)'}}>
+      <Table.Row textAlign='right' style={{ paddingTop: '40px', borderTop: '2px solid black', backgroundColor: 'rgba(217,219,188, 0.6)' }}>
         <Table.Cell>Totaal BTW</Table.Cell>
         <Table.Cell colSpan='4'>
-          { this.getTotalTax(entries).toFixed(2)}
+          {this.getTotalTax(entries).toFixed(2)}
         </Table.Cell>
       </Table.Row>
     )
@@ -343,10 +346,10 @@ class ExampleInvoice extends Component {
 
   renderTotalExclTaxEntry (entries) {
     return (
-      <Table.Row textAlign='right' style={{paddingTop: '40px', 'borderTop': '2px solid black', 'backgroundColor': 'rgba(217,219,188, 0.6)'}}>
+      <Table.Row textAlign='right' style={{ paddingTop: '40px', borderTop: '2px solid black', backgroundColor: 'rgba(217,219,188, 0.6)' }}>
         <Table.Cell>Totaal Excl. BTW</Table.Cell>
         <Table.Cell colSpan='4'>
-          { this.getTotalAmount(entries).toFixed(2)}
+          {this.getTotalAmount(entries).toFixed(2)}
         </Table.Cell>
       </Table.Row>
     )
@@ -355,10 +358,10 @@ class ExampleInvoice extends Component {
   renderTotalEntry (entries) {
     const total = this.getTotalAmount(entries) + this.getTotalTax(entries)
     return (
-      <Table.Row textAlign='right' style={{paddingTop: '40px', 'borderTop': '2px solid black', 'backgroundColor': 'rgba(184,216,186, 0.6)'}}>
+      <Table.Row textAlign='right' style={{ paddingTop: '40px', borderTop: '2px solid black', backgroundColor: 'rgba(184,216,186, 0.6)' }}>
         <Table.Cell>Totaal te betalen</Table.Cell>
         <Table.Cell colSpan='4'>
-          { total.toFixed(2) }
+          {total.toFixed(2)}
         </Table.Cell>
       </Table.Row>
     )
@@ -395,8 +398,8 @@ class ExampleInvoice extends Component {
     const { terms } = user
     if (!selectedInvoice) return null
     return (
-      <div style={{paddingLeft: '40px', paddingRight: '40px', paddingTop: '40px'}}>
-        <div dangerouslySetInnerHTML={{__html: terms}} />
+      <div style={{ paddingLeft: '40px', paddingRight: '40px', paddingTop: '40px' }}>
+        <div dangerouslySetInnerHTML={{ __html: terms }} />
       </div>
     )
   }

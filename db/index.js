@@ -31,7 +31,7 @@ function remove (name, user, id) {
       if (!doc) throw new Error('no doc found')
       const isOwner = _.isEqual(user, doc.user)
       if (!isOwner) throw new Error('not owner')
-      return Invoices.remove({_id: doc._id})
+      return Invoices.remove({ _id: doc._id })
     })
 }
 

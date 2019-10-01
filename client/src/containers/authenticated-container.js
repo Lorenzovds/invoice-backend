@@ -2,8 +2,7 @@ import React, { Component } from 'react'
 import { Route, Switch, Redirect } from 'react-router'
 import { Link } from 'react-router-dom'
 import InvoicesContainer from './invoices-container'
-import {Header, Grid,
-  Segment, Menu, Icon, Loader } from 'semantic-ui-react'
+import { Header, Grid, Segment, Menu, Icon, Loader } from 'semantic-ui-react'
 import { withAuth } from '@okta/okta-react'
 
 import '../App.css'
@@ -17,6 +16,10 @@ class AuthenticatedContainer extends Component {
     }
     this.setActiveMenu = this.setActiveMenu.bind(this)
     this.auth = props.auth
+
+    // standard wants all handle functions to start with handle
+    this.auth.handleLogout = this.auth.logout
+
     this.checkAuthentication = this.checkAuthentication.bind(this)
     this.state = { authenticated: null }
     this.checkAuthentication()
@@ -40,11 +43,13 @@ class AuthenticatedContainer extends Component {
         height: 'auto',
         width: '100vw',
         display: 'inline-flex',
-        minHeight: '100%' }}>
-        { this.renderMenu() }
-        <Segment raised style={{margin: '15px', 'width': '100%'}}>
-          { !authenticated && (<Loader active>Checking credentials</Loader>) }
-          { authenticated && this.renderHeader() && this.renderRouter() }
+        minHeight: '100%'
+      }}
+      >
+        {this.renderMenu()}
+        <Segment raised style={{ margin: '15px', width: '100%' }}>
+          {!authenticated && (<Loader active>Checking credentials</Loader>)}
+          {authenticated && this.renderHeader() && this.renderRouter()}
         </Segment>
       </div>
     )
@@ -60,15 +65,17 @@ class AuthenticatedContainer extends Component {
         borderless
         floated
         pointing
-        style={{'minHeight': '100%'}}>
-        <Grid verticalAlign='top' textAlign='center' style={{width: 'auto', paddingTop: '30%'}}>
+        style={{ minHeight: '100%' }}
+      >
+        <Grid verticalAlign='top' textAlign='center' style={{ width: 'auto', paddingTop: '30%' }}>
           <Grid.Column verticalAlign='top'>
             <Menu.Item
               name='all'
               as={Link}
               onClick={this.handleMenuClick.bind(this)}
               to='/invoices'
-              active={activeItem === 'all'}>
+              active={activeItem === 'all'}
+            >
               <Icon name='list layout' />
               Alle facturen
             </Menu.Item>
@@ -77,7 +84,8 @@ class AuthenticatedContainer extends Component {
               as={Link}
               onClick={this.handleMenuClick.bind(this)}
               to='/invoices/new'
-              active={activeItem === 'new'}>
+              active={activeItem === 'new'}
+            >
               <Icon name='plus square outline' />
               Nieuw / aanpassen
             </Menu.Item>
@@ -86,13 +94,15 @@ class AuthenticatedContainer extends Component {
               as={Link}
               onClick={this.handleMenuClick.bind(this)}
               to='/invoices/clean'
-              active={activeItem === 'clean'}>
+              active={activeItem === 'clean'}
+            >
               <Icon name='download' />
               Downloaden
             </Menu.Item>
             <Menu.Item
               name='logout'
-              onClick={this.auth.logout}>
+              onClick={this.auth.handleLogout}
+            >
               <Icon name='key' />
               Uitloggen
             </Menu.Item>
