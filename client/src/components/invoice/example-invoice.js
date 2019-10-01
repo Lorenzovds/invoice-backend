@@ -212,7 +212,7 @@ class ExampleInvoice extends Component {
     return (
       <div>
         <Container style={{display: 'inline-flex'}}>
-          <Image style={{width: '200px', height: '200px'}} src={`/${userLogo}.png`} size='tiny' />
+          <Image style={{width: '200px', height: '100%'}} src={`/${userLogo}.png`} size='tiny' />
           <Container textAlign='left' style={{height: 'auto', paddingTop: '40px', paddingLeft: '10px'}}>
             <p style={headerStyle}> {userName}</p>
             <p style={headerStyle}> {userStreet} {userStreetNumber}</p>

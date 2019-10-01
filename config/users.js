@@ -12,7 +12,7 @@ module.exports = {
     taxNr: 'BE 0690.876.560',
     iban: 'BE67 0018 3341 5487',
     bic: 'GEBABEBB',
-    logo: 'kevinvd',
+    logo: 'kevinvd2',
     terms: defaultTerms
   },
   '00ue76zz5chMI4fio0h7': {
@@ -26,7 +26,7 @@ module.exports = {
     taxNr: 'BE ****.***.***',
     iban: 'BE67 **** **** ****',
     bic: 'test bic',
-    logo: 'kevinvd',
+    logo: 'kevinvd2',
     terms: defaultTerms
   },
   '00uh2j3izk2sbDj3N0h7':
