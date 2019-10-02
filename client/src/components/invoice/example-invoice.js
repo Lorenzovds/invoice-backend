@@ -212,8 +212,8 @@ class ExampleInvoice extends Component {
     const { company, street, town, btw, invoiceNumber, invoiceDate, expireDate } = headers
     return (
       <div>
-        <Container style={{ display: 'inline-flex' }}>
-          <Image style={{ width: '200px', height: '100%' }} src={`/${userLogo}.png`} size='tiny' />
+        <Container style={{ display: 'flex', alignItems: 'center' }}>
+          <Image style={{ width: '200px', height: '100%', padding: '10px' }} src={`/${userLogo}.png`} size='tiny' />
           <Container textAlign='left' style={{ height: 'auto', paddingTop: '40px', paddingLeft: '10px' }}>
             <p style={headerStyle}> {userName}</p>
             <p style={headerStyle}> {userStreet} {userStreetNumber}</p>
