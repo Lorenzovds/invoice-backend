@@ -1,7 +1,8 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Route, Switch, Redirect } from 'react-router'
-import { Segment } from 'semantic-ui-react'
+import { Segment, Loader } from 'semantic-ui-react'
 import { withAuth } from '@okta/okta-react'
+import { isEmpty } from 'lodash'
 
 import InvoicesContainer from './invoices-container'
 import SideNav from './side-nav'
@@ -12,25 +13,49 @@ const AuthenticatedContainer = ({ auth }) => {
   const { logout } = auth
 
   const [activeMenu, setActiveMenu] = useState('all')
+  const [user, setUser] = useState({})
+  const [token, setToken] = useState('')
+
+  useEffect(() => {
+    try {
+      auth.getUser()
+        .then(user => setUser(user))
+      auth.getAccessToken()
+        .then(accessToken => setToken(accessToken))
+    } catch (err) {
+      console.error('failed to get user information, logging out')
+      logout()
+    }
+  })
+
+  if (isEmpty(token) || isEmpty(user)) {
+    return <Loader>Gegegevens aan het ophalen.</Loader>
+  }
 
   return (
     <div className={styles['main-container']}>
-      <div>
-        <SideNav handleLogout={logout} activeMenu={activeMenu} setActiveMenu={setActiveMenu} />
+      <div className={styles['menu-container']}>
+        <SideNav
+          handleLogout={logout}
+          activeMenu={activeMenu}
+          setActiveMenu={setActiveMenu}
+        />
       </div>
       <Segment raised style={{ margin: '15px', width: '100%' }}>
-        <NavRouter setActiveMenu={setActiveMenu} />
+        <Switch>
+          <Route exact path='/'>
+            <Redirect to='/invoices' />
+          </Route>
+          <Route path='/invoices'>
+            <InvoicesContainer
+              setActiveMenu={setActiveMenu}
+              user={user}
+              token={token}
+            />
+          </Route>
+        </Switch>
       </Segment>
     </div>
-  )
-}
-
-const NavRouter = ({ setActiveMenu }) => {
-  return (
-    <Switch>
-      <Route exact path='/' render={() => <Redirect to='/invoices' />} />
-      <Route path='/invoices' render={props => <InvoicesContainer setActiveMenu={setActiveMenu} />} />
-    </Switch>
   )
 }
 

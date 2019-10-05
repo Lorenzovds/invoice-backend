@@ -2,6 +2,8 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 import { Icon, Menu, Grid } from 'semantic-ui-react'
 
+import styles from './side-nav.module.css'
+
 const Nav = ({ handleLogout, activeMenu, setActiveMenu }) => {
   const handleMenuClick = (e, { name }) => {
     setActiveMenu(name)
@@ -15,9 +17,12 @@ const Nav = ({ handleLogout, activeMenu, setActiveMenu }) => {
       borderless
       floated
       pointing
-      style={{ minHeight: '100%' }}
+      className={styles['menu-grid']}
     >
-      <Grid verticalAlign='top' textAlign='center' style={{ width: 'auto', paddingTop: '30%' }}>
+      <Grid
+        verticalAlign='top'
+        textAlign='center'
+      >
         <Grid.Column verticalAlign='top'>
           <Menu.Item
             name='all'

@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React from 'react'
 import { Route, Switch } from 'react-router'
 
 import NewInvoice from '../components/invoice/new-invoice'
@@ -7,108 +7,73 @@ import ExampleInvoice from '../components/invoice/example-invoice'
 import { withAuth } from '@okta/okta-react'
 import axios from 'axios'
 
-class InvoicesContainer extends Component {
-  constructor (props) {
-    super(props)
-    Object.assign(this, props)
-    this.setActiveMenu('all')
-    this.auth = props.auth
-  }
+const Invoices = ({ setActiveMenu, user, token }) => {
+  const { sub: userId } = user
 
-  render () {
-    return (
-      <Switch>
-        <Route exact path='/invoices' render={() => this.renderAllInvoices()} />
-        <Route exact path='/invoices/new' render={() => this.renderNewInvoice()} />
-        <Route exact path='/invoices/clean' render={() => this.renderExampleInvoices()} />
-        <Route exact path='/invoices/:id' render={() => this.renderEditInvoice()} />
-      </Switch>
-    )
-  }
+  return (
+    <Switch>
+      <Route exact path='/invoices'>
+        <AllInvoices setActiveMenu={setActiveMenu} getAllInvoices={getAllInvoices(userId, token)} deleteInvoice={deleteInvoice(userId, token)} />
+      </Route>
+      <Route exact path='/invoices/new'>
+        <NewInvoice setActiveMenu={setActiveMenu} postInvoice={postInvoice(userId, token)} />
+      </Route>
+      <Route exact path='/invoices/clean'>
+        <ExampleInvoice setActiveMenu={setActiveMenu} getAllInvoices={getAllInvoices(userId, token)} getUserInfo={getUserInfo(userId, token)} />
+      </Route>
+      <Route exact path='/invoices/:id'>
+        <NewInvoice setActiveMenu={setActiveMenu} updateInvoice={updateInvoice(userId, token)} getInvoice={getInvoice(userId, token)} />
+      </Route>
+    </Switch>
+  )
+}
 
-  renderAllInvoices () {
-    return (
-      <AllInvoices setActiveMenu={this.setActiveMenu} getAllInvoices={this.getAllInvoices.bind(this)} deleteInvoice={this.deleteInvoice.bind(this)} />
-    )
-  }
-
-  renderExampleInvoices () {
-    return (
-      <ExampleInvoice setActiveMenu={this.setActiveMenu} getAllInvoices={this.getAllInvoices.bind(this)} getUserInfo={this.getUserInfo.bind(this)} />
-    )
-  }
-
-  renderNewInvoice () {
-    return (
-      <NewInvoice setActiveMenu={this.setActiveMenu} postInvoice={this.postInvoice.bind(this)} />
-    )
-  }
-
-  renderEditInvoice () {
-    return (
-      <NewInvoice setActiveMenu={this.setActiveMenu} updateInvoice={this.updateInvoice.bind(this)} getInvoice={this.getInvoice.bind(this)} />
-    )
-  }
-
-  getUserInfo () {
-    const { auth } = this
-    return Promise.all([auth.getUser(), auth.getAccessToken()])
-      .then(([{ sub: userId }, accessToken]) => {
-        return axios.get(`/api/users/${userId}`, {
-          headers: { accessToken }
-        })
-      })
-  }
-
-  postInvoice (invoice) {
-    const { auth } = this
-    return auth.getAccessToken()
-      .then(accessToken => {
-        return axios.post('/api/invoices', invoice, {
-          headers: { accessToken }
-        })
-      })
-  }
-
-  updateInvoice (invoice, id) {
-    const { auth } = this
-    return auth.getAccessToken()
-      .then(accessToken => {
-        return axios.put(`/api/invoices/${id}`, invoice, {
-          headers: { accessToken }
-        })
-      })
-  }
-
-  getAllInvoices () {
-    const { auth } = this
-    return auth.getAccessToken()
-      .then(accessToken => {
-        return axios.get('/api/invoices', {
-          headers: { accessToken }
-        })
-      })
-  }
-
-  getInvoice (id) {
-    const { auth } = this
-    return auth.getAccessToken()
-      .then(accessToken => {
-        return axios.get(`/api/invoices/${id}`, {
-          headers: { accessToken }
-        })
-      })
-  }
-
-  deleteInvoice (id) {
-    const { auth } = this
-    return auth.getAccessToken()
-      .then(accessToken => {
-        return axios.delete(`/api/invoices/${id}`, {
-          headers: { accessToken }
-        })
-      })
+const getUserInfo = (userId, token) => {
+  return () => {
+    return axios.get(`/api/users/${userId}`, {
+      headers: { accessToken: token }
+    })
   }
 }
 
-export default withAuth(InvoicesContainer)
+const postInvoice = (userId, token) => {
+  return (invoice) => {
+    return axios.post('/api/invoices', invoice, {
+      headers: { accessToken: token }
+    })
+  }
+}
+
+const updateInvoice = (userId, token) => {
+  return (invoice, id) => {
+    return axios.put(`/api/invoices/${id}`, invoice, {
+      headers: { accessToken: token }
+    })
+  }
+}
+
+const getAllInvoices = (userId, token) => {
+  return () => {
+    return axios.get('/api/invoices', {
+      headers: { accessToken: token }
+    })
+  }
+}
+
+const getInvoice = (userId, token) => {
+  return (id) => {
+    return axios.get(`/api/invoices/${id}`, {
+      headers: { accessToken: token }
+    })
+  }
+}
+
+const deleteInvoice = (userId, token) => {
+  return (id) => {
+    return axios.delete(`/api/invoices/${id}`, {
+      headers: { accessToken: token }
+    })
+  }
+}
+
+export default withAuth(Invoices)
