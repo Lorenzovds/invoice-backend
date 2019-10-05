@@ -8,7 +8,7 @@ import { map, cloneDeep, reduce, includes, every, forEach } from 'lodash'
 import moment from 'moment'
 import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
-import '../../App.css'
+
 import typeOptions from '../../constants/invoiceTypes'
 
 const taxOptions = [

@@ -3,7 +3,7 @@ import OktaAuth from '@okta/okta-auth-js'
 import { withAuth } from '@okta/okta-react'
 import { Icon, Button, Form, Grid, Header, Message, Segment } from 'semantic-ui-react'
 
-export default withAuth(class LoginForm extends React.Component {
+class LoginForm extends React.Component {
   constructor (props) {
     super(props)
     this.state = {
@@ -105,4 +105,6 @@ export default withAuth(class LoginForm extends React.Component {
       </div>
     )
   }
-})
+}
+
+export default withAuth(LoginForm)

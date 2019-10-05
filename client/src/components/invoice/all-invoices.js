@@ -2,7 +2,6 @@ import React, { Component } from 'react'
 import { Table, Button, Segment } from 'semantic-ui-react'
 import { Link } from 'react-router-dom'
 import { map, orderBy } from 'lodash'
-import '../../App.css'
 
 const typeMap = {
   offer: 'Offerte',

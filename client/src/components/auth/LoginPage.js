@@ -3,7 +3,7 @@ import { Redirect } from 'react-router-dom'
 import LoginForm from './LoginForm'
 import { withAuth } from '@okta/okta-react'
 
-export default withAuth(class Login extends Component {
+class Login extends Component {
   constructor (props) {
     super(props)
     this.state = { authenticated: null }
@@ -28,4 +28,6 @@ export default withAuth(class Login extends Component {
       ? <Redirect to={{ pathname: '/' }} />
       : <LoginForm baseUrl={this.props.baseUrl} />
   }
-})
+}
+
+export default withAuth(Login)

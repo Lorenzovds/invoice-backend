@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { Route, Switch } from 'react-router'
-import '../App.css'
+
 import NewInvoice from '../components/invoice/new-invoice'
 import AllInvoices from '../components/invoice/all-invoices'
 import ExampleInvoice from '../components/invoice/example-invoice'

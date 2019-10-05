@@ -5,7 +5,7 @@ import domtoimage from '../../lib/dom-to-image.min.js'
 import JsPdf from 'jspdf'
 import moment from 'moment'
 import { map, find, reduce, slice, each, get } from 'lodash'
-import '../../App.css'
+
 import '../../invoice.css'
 import typeOptions from '../../constants/invoiceTypes'
 
