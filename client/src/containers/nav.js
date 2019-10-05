@@ -20,7 +20,8 @@ const Nav = ({ handleLogout, activeMenu, setActiveMenu }) => {
         as={Link}
         onClick={handleMenuClick}
         to='/invoices'
-        active={activeMenu === 'all'}
+        active={isActive(activeMenu, 'all')}
+        color={isActive(activeMenu, 'all') ? 'olive' : 'black'}
       >
         <Icon name='list layout' />
         Alle facturen
@@ -30,9 +31,10 @@ const Nav = ({ handleLogout, activeMenu, setActiveMenu }) => {
         as={Link}
         onClick={handleMenuClick}
         to='/invoices/new'
-        active={activeMenu === 'new'}
+        active={isActive(activeMenu, 'new')}
+        icon='plus square outline'
+        color={isActive(activeMenu, 'new') ? 'olive' : 'black'}
       >
-        <Icon name='plus square outline' />
         Nieuw / aanpassen
       </Menu.Item>
       <Menu.Item
@@ -40,20 +42,26 @@ const Nav = ({ handleLogout, activeMenu, setActiveMenu }) => {
         as={Link}
         onClick={handleMenuClick}
         to='/invoices/clean'
-        active={activeMenu === 'clean'}
+        active={isActive(activeMenu, 'clean')}
+        color={isActive(activeMenu, 'clean') ? 'olive' : 'black'}
+        icon='download'
       >
-        <Icon name='download' />
         Downloaden
       </Menu.Item>
       <Menu.Item
         name='logout'
+        icon='key'
+        position='right'
         onClick={handleLogout}
       >
-        <Icon name='key' />
         Uitloggen
       </Menu.Item>
     </Menu>
   )
+}
+
+const isActive = (active, current) => {
+  return active === current
 }
 
 export default Nav
