@@ -5,7 +5,7 @@ import { withAuth } from '@okta/okta-react'
 import { isEmpty } from 'lodash'
 
 import InvoicesContainer from './invoices-container'
-import SideNav from './side-nav'
+import Nav from './nav'
 
 import styles from './authenticated-container.module.css'
 
@@ -34,27 +34,27 @@ const AuthenticatedContainer = ({ auth }) => {
 
   return (
     <div className={styles['main-container']}>
-      <div className={styles['menu-container']}>
-        <SideNav
-          handleLogout={logout}
-          activeMenu={activeMenu}
-          setActiveMenu={setActiveMenu}
-        />
+      <Nav
+        handleLogout={logout}
+        activeMenu={activeMenu}
+        setActiveMenu={setActiveMenu}
+      />
+      <div className={styles['content-container']}>
+        <Segment raised style={{ height: '100%' }}>
+          <Switch>
+            <Route exact path='/'>
+              <Redirect to='/invoices' />
+            </Route>
+            <Route path='/invoices'>
+              <InvoicesContainer
+                setActiveMenu={setActiveMenu}
+                user={user}
+                token={token}
+              />
+            </Route>
+          </Switch>
+        </Segment>
       </div>
-      <Segment raised style={{ margin: '15px', width: '100%' }}>
-        <Switch>
-          <Route exact path='/'>
-            <Redirect to='/invoices' />
-          </Route>
-          <Route path='/invoices'>
-            <InvoicesContainer
-              setActiveMenu={setActiveMenu}
-              user={user}
-              token={token}
-            />
-          </Route>
-        </Switch>
-      </Segment>
     </div>
   )
 }

@@ -1,30 +1,34 @@
 import React from 'react'
 import { Route, Switch } from 'react-router'
+import { withAuth } from '@okta/okta-react'
+import axios from 'axios'
 
 import NewInvoice from '../components/invoice/new-invoice'
 import AllInvoices from '../components/invoice/all-invoices'
 import ExampleInvoice from '../components/invoice/example-invoice'
-import { withAuth } from '@okta/okta-react'
-import axios from 'axios'
+
+import styles from './invoices-container.module.css'
 
 const Invoices = ({ setActiveMenu, user, token }) => {
   const { sub: userId } = user
 
   return (
-    <Switch>
-      <Route exact path='/invoices'>
-        <AllInvoices setActiveMenu={setActiveMenu} getAllInvoices={getAllInvoices(userId, token)} deleteInvoice={deleteInvoice(userId, token)} />
-      </Route>
-      <Route exact path='/invoices/new'>
-        <NewInvoice setActiveMenu={setActiveMenu} postInvoice={postInvoice(userId, token)} />
-      </Route>
-      <Route exact path='/invoices/clean'>
-        <ExampleInvoice setActiveMenu={setActiveMenu} getAllInvoices={getAllInvoices(userId, token)} getUserInfo={getUserInfo(userId, token)} />
-      </Route>
-      <Route exact path='/invoices/:id'>
-        <NewInvoice setActiveMenu={setActiveMenu} updateInvoice={updateInvoice(userId, token)} getInvoice={getInvoice(userId, token)} />
-      </Route>
-    </Switch>
+    <div className={styles['content-container']}>
+      <Switch>
+        <Route exact path='/invoices'>
+          <AllInvoices setActiveMenu={setActiveMenu} getAllInvoices={getAllInvoices(userId, token)} deleteInvoice={deleteInvoice(userId, token)} />
+        </Route>
+        <Route exact path='/invoices/new'>
+          <NewInvoice setActiveMenu={setActiveMenu} postInvoice={postInvoice(userId, token)} />
+        </Route>
+        <Route exact path='/invoices/clean'>
+          <ExampleInvoice setActiveMenu={setActiveMenu} getAllInvoices={getAllInvoices(userId, token)} getUserInfo={getUserInfo(userId, token)} />
+        </Route>
+        <Route exact path='/invoices/:id'>
+          <NewInvoice setActiveMenu={setActiveMenu} updateInvoice={updateInvoice(userId, token)} getInvoice={getInvoice(userId, token)} />
+        </Route>
+      </Switch>
+    </div>
   )
 }
 
