@@ -4,16 +4,17 @@ const app = require('../app')
 const http = require('http')
 const logger = require('../lib/logger')
 const mongoose = require('mongoose')
-const config = require('../config')
+const config = require('../config').config
 
 const mongoURL = config.mongoDB || 'mongodb://localhost/invoicer'
+
 const { PORT = 3000 } = process.env
 
 app.set('port', PORT)
 
 const server = http.createServer(app)
 
-mongoose.connect(mongoURL)
+mongoose.connect(mongoURL, { useNewUrlParser: true })
   .then(() => {
     logger.info('Started database ...')
     server.listen(PORT)
@@ -35,6 +36,8 @@ function onListening () {
 
 function onClose () {
   logger.info('Stopping ...')
+  logger.info('Bye bye!')
+  process.exit(0)
 }
 
 function onSigInt () {

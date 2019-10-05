@@ -14,6 +14,7 @@ router.use('/users', verifyRequest, userRouter)
 
 function verifyRequest (req, res, next) {
   const accessToken = req.get('accessToken')
+
   verify(accessToken)
     .then(claim => {
       // add user object to the request for future use

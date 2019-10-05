@@ -2,11 +2,12 @@
 
 const router = require('express').Router()
 const httpError = require('http-errors')
-const db = require('../db')
+const Invoices = require('../db/model/invoice')
 
 router.get('/', (req, res, next) => {
   const { user } = req
-  db.all('invoices', user)
+
+  Invoices.all(user)
     .then(invoices => {
       res.status(200).send(invoices)
     })
@@ -16,7 +17,7 @@ router.get('/', (req, res, next) => {
 router.post('/', (req, res, next) => {
   const { body, user } = req
   Object.assign(body, { user })
-  db.insert('invoices', body)
+  Invoices.insert(body)
     .then(() => {
       res.send(body).status(200)
     })
@@ -26,7 +27,7 @@ router.post('/', (req, res, next) => {
 router.get('/:id', (req, res, next) => {
   const { params, user } = req
   const { id } = params
-  db.get('invoices', user, id)
+  Invoices.get(user, id)
     .then(invoice => {
       if (!invoice) return next(httpError(404))
       res.send(invoice).status(200)
@@ -38,7 +39,7 @@ router.put('/:id', (req, res, next) => {
   const { body, user, params } = req
   const { id } = params
   Object.assign(body, { user })
-  db.update('invoices', user, id, body)
+  Invoices.update(user, id, body)
     .then(() => {
       res.send(body).status(200)
     })
@@ -48,7 +49,7 @@ router.put('/:id', (req, res, next) => {
 router.delete('/:id', (req, res, next) => {
   const { user, params } = req
   const { id } = params
-  db.delete('invoices', user, id)
+  Invoices.delete(user, id)
     .then(() => {
       res.send().status(200)
     })
