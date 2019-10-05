@@ -12,7 +12,8 @@
     "server": "nodemon ./bin/www",
     "dev": "concurrently --kill-others-on-fail 'yarn server' 'yarn client'",
     "heroku-postbuild": "yarn build",
-    "build": "cd client && yarn --production=false && yarn run build"
+    "build": "cd client && yarn --production=false && yarn run build",
+    "full-install": "yarn && cd client && yarn"
   },
   "standard": {
     "env": {
@@ -43,6 +44,7 @@
   "devDependencies": {
     "concurrently": "^3.5.1",
     "husky": "^0.14.3",
+    "nodemon": "^1.19.3",
     "standard": "^14.3.1"
   }
 }
