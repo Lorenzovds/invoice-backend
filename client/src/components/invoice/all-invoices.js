@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useCallback } from 'react'
 import { Table, Button, Segment, Message } from 'semantic-ui-react'
 import { Link } from 'react-router-dom'
 import { map, orderBy } from 'lodash'
@@ -8,7 +8,7 @@ const typeMap = {
   invoice: 'Factuur'
 }
 
-const AllInvoices = ({ getAllInvoices, deleteInvoice }) => {
+const AllInvoices = ({ getAllInvoices, deleteInvoice, error, setActiveMenu }) => {
   const [loading, setLoading] = useState(true)
   const [invoices, setInvoices] = useState([])
   const [errorMessage, setErrorMessage] = useState('')
@@ -18,7 +18,7 @@ const AllInvoices = ({ getAllInvoices, deleteInvoice }) => {
 
     try {
       await deleteInvoice(id)
-      await fetchInvoices()
+      await fetchInvoicesCallback()
     } catch (err) {
       console.error(err, 'failed to delete invoice')
       setErrorMessage('Kon facturen niet inladen')
@@ -27,7 +27,7 @@ const AllInvoices = ({ getAllInvoices, deleteInvoice }) => {
     setLoading(false)
   }
 
-  const fetchInvoices = async () => {
+  const fetchInvoicesCallback = useCallback(async () => {
     setLoading(false)
 
     const fetchedInvoices = await getAllInvoices()
@@ -35,11 +35,12 @@ const AllInvoices = ({ getAllInvoices, deleteInvoice }) => {
 
     setInvoices(sortedInvoices)
     setLoading(false)
-  }
+  }, [getAllInvoices])
 
   useEffect(() => {
-    fetchInvoices()
-  }, [])
+    setErrorMessage(error || '')
+    fetchInvoicesCallback()
+  }, [error, fetchInvoicesCallback])
 
   return (
     <Segment basic loading={loading}>

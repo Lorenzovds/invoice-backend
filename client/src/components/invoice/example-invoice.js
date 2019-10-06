@@ -7,7 +7,7 @@ import moment from 'moment'
 import { map, find, reduce, slice, each, get } from 'lodash'
 
 import '../../invoice.css'
-import typeOptions from '../../constants/invoiceTypes'
+import { InvoiceTypes } from '../../constants/invoiceDefaults'
 
 const INTRO_CAP = 7
 const PAGE_CAP = 18
@@ -118,7 +118,7 @@ class ExampleInvoice extends Component {
   }
 
   getDisplayType (type) {
-    return find(typeOptions, { value: type }, { text: 'unknown type' })
+    return find(InvoiceTypes, { value: type }, { text: 'unknown type' })
   }
 
   handleDropdownChange (e, { value }) {
