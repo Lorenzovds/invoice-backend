@@ -29,9 +29,10 @@ router.post('/', (req, res, next) => {
     .catch(err => next(httpError(400, err)))
 })
 
-router.get('/:id', (req, res, next) => {
-  const { id } = req.params
-  const user = users[id]
+router.get('/me', (req, res, next) => {
+  const { uid } = req.user
+  const user = users[uid]
+
   if (!user) return res.status(400).send('user not configured')
   return res.status(200).send(user)
 })

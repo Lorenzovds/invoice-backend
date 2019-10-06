@@ -16,16 +16,16 @@ const Invoices = ({ setActiveMenu, user, token }) => {
     <div className={styles['content-container']}>
       <Switch>
         <Route exact path='/invoices'>
-          <AllInvoices setActiveMenu={setActiveMenu} getAllInvoices={getAllInvoices(userId, token)} deleteInvoice={deleteInvoice(userId, token)} />
+          <AllInvoices setActiveMenu={setActiveMenu} getAllInvoices={getAllInvoices(token)} deleteInvoice={deleteInvoice(token)} />
         </Route>
         <Route exact path='/invoices/new'>
-          <NewInvoice setActiveMenu={setActiveMenu} postInvoice={postInvoice(userId, token)} />
+          <NewInvoice setActiveMenu={setActiveMenu} postInvoice={postInvoice(token)} />
         </Route>
         <Route exact path='/invoices/clean'>
-          <ExampleInvoice setActiveMenu={setActiveMenu} getAllInvoices={getAllInvoices(userId, token)} getUserInfo={getUserInfo(userId, token)} />
+          <ExampleInvoice setActiveMenu={setActiveMenu} getAllInvoices={getAllInvoices(token)} getUserInfo={getUserInfo(userId, token)} />
         </Route>
         <Route exact path='/invoices/:id'>
-          <NewInvoice setActiveMenu={setActiveMenu} updateInvoice={updateInvoice(userId, token)} getInvoice={getInvoice(userId, token)} />
+          <NewInvoice setActiveMenu={setActiveMenu} updateInvoice={updateInvoice(token)} getInvoice={getInvoice(token)} />
         </Route>
       </Switch>
     </div>
@@ -34,13 +34,13 @@ const Invoices = ({ setActiveMenu, user, token }) => {
 
 const getUserInfo = (userId, token) => {
   return () => {
-    return axios.get(`/api/users/${userId}`, {
+    return axios.get('/api/users/me', {
       headers: { accessToken: token }
     })
   }
 }
 
-const postInvoice = (userId, token) => {
+const postInvoice = (token) => {
   return (invoice) => {
     return axios.post('/api/invoices', invoice, {
       headers: { accessToken: token }
@@ -48,7 +48,7 @@ const postInvoice = (userId, token) => {
   }
 }
 
-const updateInvoice = (userId, token) => {
+const updateInvoice = (token) => {
   return (invoice, id) => {
     return axios.put(`/api/invoices/${id}`, invoice, {
       headers: { accessToken: token }
@@ -56,15 +56,15 @@ const updateInvoice = (userId, token) => {
   }
 }
 
-const getAllInvoices = (userId, token) => {
+const getAllInvoices = (token) => {
   return () => {
     return axios.get('/api/invoices', {
       headers: { accessToken: token }
-    })
+    }).then(({ data }) => data)
   }
 }
 
-const getInvoice = (userId, token) => {
+const getInvoice = (token) => {
   return (id) => {
     return axios.get(`/api/invoices/${id}`, {
       headers: { accessToken: token }
@@ -72,7 +72,7 @@ const getInvoice = (userId, token) => {
   }
 }
 
-const deleteInvoice = (userId, token) => {
+const deleteInvoice = (token) => {
   return (id) => {
     return axios.delete(`/api/invoices/${id}`, {
       headers: { accessToken: token }

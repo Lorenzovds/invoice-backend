@@ -47,6 +47,7 @@ class ExampleInvoice extends Component {
       .then(([invoicesRes, userRes]) => {
         const { data: invoicesData } = invoicesRes
         const { data: userData } = userRes
+
         this.setState({
           invoices: invoicesData,
           user: userData,

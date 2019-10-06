@@ -26,7 +26,7 @@ const AuthenticatedContainer = ({ auth }) => {
       console.error('failed to get user information, logging out')
       logout()
     }
-  })
+  }, [])
 
   if (isEmpty(token) || isEmpty(user)) {
     return <Loader>Gegegevens aan het ophalen.</Loader>

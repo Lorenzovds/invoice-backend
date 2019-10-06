@@ -32,9 +32,9 @@ const Nav = ({ handleLogout, activeMenu, setActiveMenu }) => {
         onClick={handleMenuClick}
         to='/invoices/new'
         active={isActive(activeMenu, 'new')}
-        icon='plus square outline'
         color={isActive(activeMenu, 'new') ? 'olive' : 'black'}
       >
+        <Icon name='plus square outline' />
         Nieuw / aanpassen
       </Menu.Item>
       <Menu.Item
@@ -44,17 +44,16 @@ const Nav = ({ handleLogout, activeMenu, setActiveMenu }) => {
         to='/invoices/clean'
         active={isActive(activeMenu, 'clean')}
         color={isActive(activeMenu, 'clean') ? 'olive' : 'black'}
-        icon='download'
       >
+        <Icon name='download' />
         Downloaden
       </Menu.Item>
       <Menu.Item
         name='logout'
-        icon='key'
         position='right'
         onClick={handleLogout}
       >
-        Uitloggen
+        <Icon name='log out' />
       </Menu.Item>
     </Menu>
   )

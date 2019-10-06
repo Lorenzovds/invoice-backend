@@ -1,5 +1,5 @@
-import React, { Component } from 'react'
-import { Table, Button, Segment } from 'semantic-ui-react'
+import React, { useState, useEffect } from 'react'
+import { Table, Button, Segment, Message } from 'semantic-ui-react'
 import { Link } from 'react-router-dom'
 import { map, orderBy } from 'lodash'
 
@@ -8,95 +8,102 @@ const typeMap = {
   invoice: 'Factuur'
 }
 
-class AllInvoices extends Component {
-  constructor (props) {
-    super(props)
-    this.getAllInvoices = props.getAllInvoices
-    this.deleteInvoice = props.deleteInvoice
-    this.state = {
-      loading: true,
-      invoices: []
+const AllInvoices = ({ getAllInvoices, deleteInvoice }) => {
+  const [loading, setLoading] = useState(true)
+  const [invoices, setInvoices] = useState([])
+  const [errorMessage, setErrorMessage] = useState('')
+
+  const handleDelete = async (id) => {
+    setLoading(true)
+
+    try {
+      await deleteInvoice(id)
+      await fetchInvoices()
+    } catch (err) {
+      console.error(err, 'failed to delete invoice')
+      setErrorMessage('Kon facturen niet inladen')
     }
+
+    setLoading(false)
   }
 
-  componentDidMount () {
-    this._fetchAllInvoices()
+  const fetchInvoices = async () => {
+    setLoading(false)
+
+    const fetchedInvoices = await getAllInvoices()
+    const sortedInvoices = orderBy(fetchedInvoices, ['date'], ['desc'])
+
+    setInvoices(sortedInvoices)
+    setLoading(false)
   }
 
-  _fetchAllInvoices () {
-    this.setState({ loading: true })
-    this.getAllInvoices()
-      .then(res => {
-        const { data } = res
-        const sortedInvoices = orderBy(data, ['date'], ['desc'])
-        this.setState({ invoices: sortedInvoices, loading: false })
-      })
-      .catch(() => {
-        this.setState({ loading: false, errorMessage: 'Kon facturen niet inladen' })
-      })
-  }
+  useEffect(() => {
+    fetchInvoices()
+  }, [])
 
-  render () {
-    return (
-      <Segment basic loading={this.state.loading}>
-        {this.renderInvoiceTable()}
-      </Segment>
-    )
-  }
+  return (
+    <Segment basic loading={loading}>
+      {
+        errorMessage &&
+          <Message color='red'>{errorMessage}</Message>
+      }
+      <InvoiceTable invoices={invoices} handleDelete={handleDelete} />
+    </Segment>
+  )
+}
 
-  renderInvoiceTable () {
-    return (
-      <Table celled striped>
-        <Table.Header>
-          <Table.Row>
-            <Table.HeaderCell colSpan='2'>Alle facturen / offertes</Table.HeaderCell>
-            <Table.HeaderCell textAlign='right'>Aangemaakt op</Table.HeaderCell>
-          </Table.Row>
-        </Table.Header>
-        {this.renderInvoices()}
-      </Table>
-    )
-  }
+const InvoiceTable = ({ invoices, handleDelete }) => {
+  return (
+    <Table celled striped>
+      <Table.Header>
+        <Table.Row>
+          <Table.HeaderCell colSpan='2'>Alle facturen / offertes</Table.HeaderCell>
+          <Table.HeaderCell textAlign='right'>Aangemaakt op</Table.HeaderCell>
+        </Table.Row>
+      </Table.Header>
+      <Invoices invoices={invoices} handleDelete={handleDelete} />
+    </Table>
+  )
+}
 
-  renderInvoices () {
-    const { invoices } = this.state
-    return (
-      <Table.Body>
-        {map(invoices, this.renderInvoiceEntry.bind(this))}
-      </Table.Body>
-    )
-  }
+const Invoices = ({ invoices, handleDelete }) => {
+  return (
+    <Table.Body>
+      {
+        map(invoices, (invoice, index) => {
+          return (
+            <InvoiceEntry
+              invoice={invoice}
+              key={index}
+              handleDelete={handleDelete}
+            />
+          )
+        })
+      }
+    </Table.Body>
+  )
+}
 
-  renderInvoiceEntry (invoice, index) {
-    const { headers, date, _id, type } = invoice
-    const { company, town, street, invoiceNumber } = headers
-    const displayType = typeMap[type] || 'geen type'
-    return (
-      <Table.Row key={index}>
-        <Table.Cell>
-          <Link to={`invoices/${_id}`}>
-            <Button circular icon='pencil' />
-          </Link>
-          {company} - {invoiceNumber} ({displayType})
-        </Table.Cell>
-        <Table.Cell>{town} - {street}</Table.Cell>
-        <Table.Cell textAlign='right'>
-          {new Date(date).toLocaleDateString()}
-          <Button style={{ marginLeft: '10px' }} onClick={this.handleDelete.bind(this, _id)} circular icon='trash' />
-        </Table.Cell>
-      </Table.Row>
-    )
-  }
+const InvoiceEntry = ({ invoice, handleDelete }) => {
+  const { headers, date, _id, type } = invoice
+  const { company, town, street, invoiceNumber } = headers
+  const displayType = typeMap[type] || 'geen type'
 
-  handleDelete (id) {
-    this.setState({ deleteLoading: true })
-    this.deleteInvoice(id)
-      .then(() => {
-        this.setState({ deleteLoading: false })
-        this._fetchAllInvoices()
-      })
-      .catch(() => this.setState({ deleteLoading: false }))
-  }
+  return (
+    <Table.Row>
+      <Table.Cell>
+        <Link to={`invoices/${_id}`}>
+          <Button circular icon='pencil' />
+        </Link>
+        {company} - {invoiceNumber} ({displayType})
+      </Table.Cell>
+      <Table.Cell>{town} - {street}</Table.Cell>
+      <Table.Cell textAlign='right'>
+        {new Date(date).toLocaleDateString()}
+        <Button style={{ marginLeft: '10px' }} onClick={handleDelete.bind(this, _id)} circular icon='trash' />
+      </Table.Cell>
+    </Table.Row>
+  )
 }
 
 export default AllInvoices
