@@ -10,12 +10,13 @@ const pino = require('express-pino-logger')({
   logger
 })
 
-const whitelist = ['http://<YOUR-APP-NAME>.herokuapp.com', 'http://invoicer.vandesijpe.org']
+const whitelist = ['http://localhost:3000', 'http://<YOUR-APP-NAME>.herokuapp.com', 'http://invoicer.vandesijpe.org']
 const corsOptions = {
   origin: function (origin, callback) {
-    if (whitelist.indexOf(origin) !== -1) {
+    if (whitelist.indexOf(origin) !== -1 || !origin) {
       callback(null, true)
     } else {
+      logger.error({ origin }, 'failed to validate cors')
       callback(new Error('Not allowed by CORS'))
     }
   }
