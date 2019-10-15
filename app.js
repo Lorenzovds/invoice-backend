@@ -2,12 +2,24 @@ const express = require('express')
 const cookieParser = require('cookie-parser')
 const bodyParser = require('body-parser')
 const httpError = require('http-errors')
+const cors = require('cors')
 
 const router = require('./routes')
 const logger = require('./lib/logger')
 const pino = require('express-pino-logger')({
   logger
 })
+
+const whitelist = ['http://<YOUR-APP-NAME>.herokuapp.com', 'http://invoicer.vandesijpe.org']
+const corsOptions = {
+  origin: function (origin, callback) {
+    if (whitelist.indexOf(origin) !== -1) {
+      callback(null, true)
+    } else {
+      callback(new Error('Not allowed by CORS'))
+    }
+  }
+}
 
 const {
   NODE_ENV = 'development'
@@ -22,11 +34,7 @@ app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(cookieParser())
 
-app.use((req, res, next) => {
-  res.header('Access-Control-Allow-Origin', 'http://<YOUR-APP-NAME>.herokuapp.com, http://invoicer.vandesijpe.org')
-  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept')
-  next()
-})
+app.use(cors(corsOptions))
 
 app.use('/api', router)
 
