@@ -23,7 +23,7 @@ app.use(bodyParser.urlencoded({ extended: false }))
 app.use(cookieParser())
 
 app.use((req, res, next) => {
-  res.header('Access-Control-Allow-Origin', 'http://<YOUR-APP-NAME>.herokuapp.com')
+  res.header('Access-Control-Allow-Origin', 'http://<YOUR-APP-NAME>.herokuapp.com, http://invoicer.vandesijpe.org')
   res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept')
   next()
 })
