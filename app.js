@@ -10,7 +10,12 @@ const pino = require('express-pino-logger')({
   logger
 })
 
-const whitelist = ['http://localhost:3000', 'http://<YOUR-APP-NAME>.herokuapp.com', 'http://invoicer.vandesijpe.org']
+const whitelist = [
+  'http://localhost:3000',
+  'https://cryptic-bastion-96379.herokuapp.com',
+  'http://cryptic-bastion-96379.herokuapp.com',
+  'http://invoicer.vandesijpe.org'
+]
 const corsOptions = {
   origin: function (origin, callback) {
     if (whitelist.indexOf(origin) !== -1 || !origin) {
