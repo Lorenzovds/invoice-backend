@@ -177,7 +177,8 @@ class ExampleInvoice extends Component {
         return Promise.resolve()
       })
       .then(() => {
-        doc.save(`${displayType}_${company}_${invoiceNumber}`)
+        const fileName = `${displayType}_${company}_${invoiceNumber}`
+        doc.save(fileName.replace('.', ''))
         this.setState({ exportLoading: false })
       })
       .catch((error) => {
