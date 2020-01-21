@@ -1,13 +1,33 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { Icon, Menu } from 'semantic-ui-react'
 
 import styles from './nav.module.css'
 
-const Nav = ({ handleLogout, activeMenu, setActiveMenu }) => {
-  const handleMenuClick = (e, { name }) => {
-    setActiveMenu(name)
-  }
+const Nav = ({ handleLogout, location }) => {
+  const [activeMenu, setActiveMenu] = useState('all')
+
+  useEffect(() => {
+    const { pathname = '' } = location || {}
+
+    const cleanedPathname = cleanPathName(pathname)
+
+    switch (cleanedPathname) {
+      case '/invoices': {
+        setActiveMenu('all')
+        break
+      }
+      case '/invoices/clean': {
+        setActiveMenu('clean')
+        break
+      }
+      case '/invoices/new': {
+        setActiveMenu('new')
+        break
+      }
+      default: setActiveMenu('all')
+    }
+  }, [location])
 
   return (
     <Menu
@@ -18,7 +38,6 @@ const Nav = ({ handleLogout, activeMenu, setActiveMenu }) => {
       <Menu.Item
         name='all'
         as={Link}
-        onClick={handleMenuClick}
         to='/invoices'
         active={isActive(activeMenu, 'all')}
         color={isActive(activeMenu, 'all') ? 'olive' : 'black'}
@@ -29,7 +48,6 @@ const Nav = ({ handleLogout, activeMenu, setActiveMenu }) => {
       <Menu.Item
         name='new'
         as={Link}
-        onClick={handleMenuClick}
         to='/invoices/new'
         active={isActive(activeMenu, 'new')}
         color={isActive(activeMenu, 'new') ? 'olive' : 'black'}
@@ -40,7 +58,6 @@ const Nav = ({ handleLogout, activeMenu, setActiveMenu }) => {
       <Menu.Item
         name='clean'
         as={Link}
-        onClick={handleMenuClick}
         to='/invoices/clean'
         active={isActive(activeMenu, 'clean')}
         color={isActive(activeMenu, 'clean') ? 'olive' : 'black'}
@@ -57,6 +74,12 @@ const Nav = ({ handleLogout, activeMenu, setActiveMenu }) => {
       </Menu.Item>
     </Menu>
   )
+}
+
+const cleanPathName = (pathname) => {
+  if (pathname.match('\\/invoices\\/[a-zA-Z0-9]{24}$')) return '/invoices/new'
+
+  return pathname
 }
 
 const isActive = (active, current) => {

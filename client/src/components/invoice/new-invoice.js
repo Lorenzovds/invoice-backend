@@ -11,6 +11,8 @@ import 'react-datepicker/dist/react-datepicker.css'
 
 import EntryTable from './entry-table'
 
+import styles from './new-invoice.module.css'
+
 import {
   parseHeadersOut,
   parseHeadersIn,
@@ -172,12 +174,11 @@ const NewInvoice = ({ postInvoice, getInvoice, updateInvoice, error, match }) =>
                 </Message>
               )
             }
-            <div>
+            <div className={styles['save-button-right']}>
               <Button
                 disabled={!!errorMessage}
                 loading={saving}
                 size='medium'
-                floated='right'
                 content={edit ? 'aanpassen' : 'nieuw'}
                 positive onClick={() => saveInvoice()}
               />

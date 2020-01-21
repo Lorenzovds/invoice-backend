@@ -8,7 +8,7 @@ const typeMap = {
   invoice: 'Factuur'
 }
 
-const AllInvoices = ({ getAllInvoices, deleteInvoice, error, setActiveMenu }) => {
+const AllInvoices = ({ getAllInvoices, deleteInvoice, error }) => {
   const [loading, setLoading] = useState(true)
   const [invoices, setInvoices] = useState([])
   const [errorMessage, setErrorMessage] = useState('')

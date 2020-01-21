@@ -9,7 +9,7 @@ import ExampleInvoice from '../components/invoice/example-invoice'
 
 import styles from './invoices-container.module.css'
 
-const Invoices = ({ setActiveMenu, user, token }) => {
+const Invoices = ({ user, token }) => {
   const { sub: userId } = user
 
   const [error, setError] = useState('')
@@ -92,16 +92,16 @@ const Invoices = ({ setActiveMenu, user, token }) => {
     <div className={styles['content-container']}>
       <Switch>
         <Route exact path='/invoices'>
-          <AllInvoices error={error} setActiveMenu={setActiveMenu} getAllInvoices={getAllInvoices(token)} deleteInvoice={deleteInvoice(token)} />
+          <AllInvoices error={error} getAllInvoices={getAllInvoices(token)} deleteInvoice={deleteInvoice(token)} />
         </Route>
         <Route exact path='/invoices/new'>
-          <NewInvoice error={error} setActiveMenu={setActiveMenu} postInvoice={postInvoice(token)} />
+          <NewInvoice error={error} postInvoice={postInvoice(token)} />
         </Route>
         <Route exact path='/invoices/clean'>
-          <ExampleInvoice error={error} setActiveMenu={setActiveMenu} getAllInvoices={getAllInvoices(token)} getUserInfo={getUserInfo(userId, token)} />
+          <ExampleInvoice error={error} getAllInvoices={getAllInvoices(token)} getUserInfo={getUserInfo(userId, token)} />
         </Route>
         <Route exact path='/invoices/:id'>
-          <NewInvoice error={error} setActiveMenu={setActiveMenu} updateInvoice={updateInvoice(token)} getInvoice={getInvoice(token)} />
+          <NewInvoice error={error} updateInvoice={updateInvoice(token)} getInvoice={getInvoice(token)} />
         </Route>
       </Switch>
     </div>

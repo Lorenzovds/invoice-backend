@@ -16,7 +16,6 @@ class ExampleInvoice extends Component {
   constructor (props) {
     super(props)
     this.getAllInvoices = props.getAllInvoices
-    this.setActiveMenu = props.setActiveMenu
     this.getUserInfo = props.getUserInfo
     this.invoicePagesDOM = []
     this.state = {
@@ -25,10 +24,6 @@ class ExampleInvoice extends Component {
       selectedInvoice: undefined,
       user: {}
     }
-  }
-
-  componentWillMount () {
-    this.setActiveMenu('clean')
   }
 
   componentDidMount () {

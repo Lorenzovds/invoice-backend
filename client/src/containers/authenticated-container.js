@@ -9,10 +9,8 @@ import Nav from './nav'
 
 import styles from './authenticated-container.module.css'
 
-const AuthenticatedContainer = ({ auth }) => {
+const AuthenticatedContainer = ({ auth, location }) => {
   const { logout } = auth
-
-  const [activeMenu, setActiveMenu] = useState('all')
   const [user, setUser] = useState({})
   const [token, setToken] = useState('')
 
@@ -36,8 +34,7 @@ const AuthenticatedContainer = ({ auth }) => {
     <div className={styles['main-container']}>
       <Nav
         handleLogout={logout}
-        activeMenu={activeMenu}
-        setActiveMenu={setActiveMenu}
+        location={location}
       />
       <div className={styles['content-container']}>
         <Segment raised style={{ height: '100%' }}>
@@ -47,7 +44,6 @@ const AuthenticatedContainer = ({ auth }) => {
             </Route>
             <Route path='/invoices'>
               <InvoicesContainer
-                setActiveMenu={setActiveMenu}
                 user={user}
                 token={token}
               />
