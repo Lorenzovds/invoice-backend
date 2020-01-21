@@ -18,7 +18,7 @@ const AllInvoices = ({ getAllInvoices, deleteInvoice, error, setActiveMenu }) =>
 
     try {
       await deleteInvoice(id)
-      await fetchInvoicesCallback()
+      await fetchInvoices()
     } catch (err) {
       console.error(err, 'failed to delete invoice')
       setErrorMessage('Kon facturen niet inladen')
@@ -27,7 +27,7 @@ const AllInvoices = ({ getAllInvoices, deleteInvoice, error, setActiveMenu }) =>
     setLoading(false)
   }
 
-  const fetchInvoicesCallback = useCallback(async () => {
+  const fetchInvoices = useCallback(async () => {
     setLoading(false)
 
     const fetchedInvoices = await getAllInvoices()
@@ -39,8 +39,8 @@ const AllInvoices = ({ getAllInvoices, deleteInvoice, error, setActiveMenu }) =>
 
   useEffect(() => {
     setErrorMessage(error || '')
-    fetchInvoicesCallback()
-  }, [error, fetchInvoicesCallback])
+    fetchInvoices()
+  }, [error, fetchInvoices])
 
   return (
     <Segment basic loading={loading}>

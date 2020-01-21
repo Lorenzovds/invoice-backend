@@ -4,7 +4,7 @@ import {
   Header, Form, Button,
   Message, Segment, Dropdown, TextArea, Popup, Icon
 } from 'semantic-ui-react'
-import { cloneDeep } from 'lodash'
+import { cloneDeep, filter, get } from 'lodash'
 
 import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
@@ -21,8 +21,7 @@ import {
 
 import { HeaderDefaults, EntryDefaults, InvoiceTypes } from '../../constants/invoiceDefaults'
 
-const NewInvoice = ({ postInvoice, getInvoice, updateInvoice, id, error }) => {
-  const [invoiceId, setInvoiceId] = useState('')
+const NewInvoice = ({ postInvoice, getInvoice, updateInvoice, error, match }) => {
   const [headers, setHeaders] = useState({})
   const [currentEntry, setCurrentEntry] = useState({})
   const [type, setType] = useState(InvoiceTypes[0].value)
@@ -33,6 +32,8 @@ const NewInvoice = ({ postInvoice, getInvoice, updateInvoice, id, error }) => {
   const [edit, setEdit] = useState(false)
   const [errorMessage, setErrorMessage] = useState('')
   const [successMessage, setSuccessMessage] = useState('')
+
+  const invoiceId = get(match, 'params.id', '')
 
   useEffect(() => {
     // set the potentially passed errormessage
@@ -45,16 +46,16 @@ const NewInvoice = ({ postInvoice, getInvoice, updateInvoice, id, error }) => {
     // if no id is passed it means we are creating a new invoice
     // no need for setting up the fields
     setLoading(false)
-    if (!id) return
+
+    if (!invoiceId) return
+
     setLoading(true)
 
     // turn on edit mode
     setEdit(true)
-    // set the current invoice id we are editing
-    setInvoiceId(id)
 
     // fetch the invoice from the api
-    getInvoice(id)
+    getInvoice(invoiceId)
       .then(invoice => {
         const { entries, headers, type = InvoiceTypes[0].value, description } = invoice
 
@@ -68,8 +69,7 @@ const NewInvoice = ({ postInvoice, getInvoice, updateInvoice, id, error }) => {
         setDescription(description)
         setLoading(false)
       })
-    setLoading(false)
-  }, [postInvoice, getInvoice, updateInvoice, id, error])
+  }, [invoiceId, error, postInvoice, getInvoice, updateInvoice])
 
   const saveInvoice = () => {
     setSaving(true)
@@ -110,9 +110,16 @@ const NewInvoice = ({ postInvoice, getInvoice, updateInvoice, id, error }) => {
       setErrorMessage('zorg dat er cijfers worden ingevuld waar nodig')
       return
     }
-    entries.push(currentEntry)
+
     setEntries([...entries, currentEntry])
+
     setCurrentEntry(cloneDeep(EntryDefaults))
+  }
+
+  const deleteEntry = (indexToDelete) => {
+    // prefer filter because it doesn't mutate
+    const filteredEntries = filter(entries, (entry, index) => index !== indexToDelete)
+    setEntries(filteredEntries)
   }
 
   return (
@@ -143,6 +150,7 @@ const NewInvoice = ({ postInvoice, getInvoice, updateInvoice, id, error }) => {
             <div>
               <EntryTable
                 entries={entries}
+                handleEntryDelete={deleteEntry}
                 currentEntry={currentEntry}
                 setCurrentEntry={setCurrentEntry}
                 handleEntrySubmit={entrySubmit}

@@ -6,11 +6,11 @@ import {
 import { map, reduce } from 'lodash'
 import { TaxOptions } from '../../constants/invoiceDefaults'
 
-const EntryTable = ({ entries, setEntries, currentEntry, setCurrentEntry, handleEntrySubmit, saving }) => {
+const EntryTable = ({ entries, handleEntryDelete, currentEntry, setCurrentEntry, handleEntrySubmit, saving }) => {
   return (
     <Table celled style={{ marginBottom: '30px' }}>
       <EntryTableHeader />
-      <EntryTableBody entries={entries} setEntries={setEntries} />
+      <EntryTableBody entries={entries} handleEntryDelete={handleEntryDelete} />
       <EntryTableFooter
         currentEntry={currentEntry}
         setCurrentEntry={setCurrentEntry}
@@ -36,10 +36,10 @@ const EntryTableHeader = () => {
   )
 }
 
-const EntryTableBody = ({ entries }) => {
+const EntryTableBody = ({ entries, handleEntryDelete }) => {
   return (
     <Table.Body>
-      {map(entries, (entry, index) => <EntryTableEntry entry={entry} index={index} />)}
+      {map(entries, (entry, index) => <EntryTableEntry key={index} entry={entry} index={index} handleEntryDelete={handleEntryDelete} />)}
       <EntryTableTotalEntry entries={entries} />
     </Table.Body>
   )
@@ -79,20 +79,20 @@ const EntryTableFooter = ({ currentEntry, setCurrentEntry, handleEntrySubmit, sa
   )
 }
 
-const EntryTableEntry = ({ entry, index }) => {
+const EntryTableEntry = ({ entry, index, handleEntryDelete }) => {
   const { description, amount, price, tax } = entry
 
   const totalPrice = calculatePrice(amount, price, tax)
 
   return (
-    <Table.Row key={index}>
+    <Table.Row>
       <Table.Cell>{description}</Table.Cell>
       <Table.Cell>{amount}</Table.Cell>
       <Table.Cell>{price}</Table.Cell>
       <Table.Cell>{tax}</Table.Cell>
       <Table.Cell>{totalPrice}</Table.Cell>
       <Table.Cell>
-        <Button style={{ height: '50%' }} negative circular icon='trash' onClick={() => deleteEntry(index)} />
+        <Button style={{ height: '50%' }} negative circular icon='trash' onClick={() => handleEntryDelete(index)} />
       </Table.Cell>
     </Table.Row>
   )
