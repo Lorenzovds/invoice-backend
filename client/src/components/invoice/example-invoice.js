@@ -228,7 +228,7 @@ class ExampleInvoice extends Component {
         </Container>
         <Segment className='invoice' basic floated='right' style={{ marginRight: '100px', marginBottom: '0px', width: 'auto' }}>
           <Header as='h4'>Klantinfo</Header>
-          <p>{company}</p>
+          <p style={{ whiteSpace: 'nowrap' }}>{company}</p>
           <p style={headerStyle}>{street}</p>
           <p style={headerStyle}>{town}</p>
         </Segment>
