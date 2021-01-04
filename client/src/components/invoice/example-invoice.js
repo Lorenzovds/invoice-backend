@@ -10,7 +10,7 @@ import '../../invoice.css'
 import typeOptions from '../../constants/invoiceTypes'
 
 const INTRO_CAP = 7
-const PAGE_CAP = 18
+const PAGE_CAP = 10
 
 class ExampleInvoice extends Component {
   constructor (props) {
