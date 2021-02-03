@@ -17,16 +17,16 @@ module.exports = {
   },
   '00ue76zz5chMI4fio0h7': {
     name: 'Lorenzo test',
-    street: 'Bieststraat',
-    number: '66',
-    town: 'kalken',
-    zipcode: '9270',
-    phone: '04** ** ** **',
-    mail: 'test@hotmail.com',
+    street: 'grote kouterstraaat',
+    number: '8',
+    town: 'uitbergen',
+    zipcode: '9290',
+    phone: '0471 65 49 70',
+    mail: 'lorenzo.vandesijpe@hotmail.nl',
     taxNr: 'BE ****.***.***',
     iban: 'BE67 **** **** ****',
     bic: 'test bic',
-    logo: 'kevinvd2',
+    logo: 'placeholder',
     terms: defaultTerms
   },
   '00uh2j3izk2sbDj3N0h7':
@@ -42,5 +42,19 @@ module.exports = {
     iban: 'BE66 0015 1596 8843',
     bic: 'GEBABEBB',
     logo: 'filipdt2'
+  },
+  '00uws70re7DcH8ccQ0h7': {
+    name: 'Dylan Verstraete',
+    street: 'Nieuwescheldestraat',
+    number: '13',
+    town: 'Zwijnaarde',
+    zipcode: '9052',
+    phone: '0486 82 30 53',
+    mail: 'dylan_verstraete1@hotmail.com',
+    taxNr: 'BE 0762.796.518',
+    iban: 'BE87 7310 5166 4494',
+    bic: 'KREDBEBB',
+    logo: 'placeholder',
+    terms: defaultTerms
   }
 }
