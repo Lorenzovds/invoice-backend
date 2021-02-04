@@ -54,7 +54,7 @@ module.exports = {
     taxNr: 'BE 0762.796.518',
     iban: 'BE87 7310 5166 4494',
     bic: 'KREDBEBB',
-    logo: 'placeholder',
+    logo: 'dylan',
     terms: defaultTerms
   }
 }
