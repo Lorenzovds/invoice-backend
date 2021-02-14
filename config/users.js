@@ -16,16 +16,16 @@ module.exports = {
     terms: defaultTerms
   },
   '00ue76zz5chMI4fio0h7': {
-    name: 'Lorenzo test',
+    name: 'Van De Sijpe Lorenzo',
     street: 'grote kouterstraaat',
     number: '8',
     town: 'uitbergen',
     zipcode: '9290',
     phone: '0471 65 49 70',
     mail: 'lorenzo.vandesijpe@hotmail.nl',
-    taxNr: 'BE ****.***.***',
-    iban: 'BE67 **** **** ****',
-    bic: 'test bic',
+    taxNr: 'BE 0762651414',
+    iban: 'BE79 0018 9998 1133',
+    bic: 'GEBABEBB',
     logo: 'placeholder',
     terms: defaultTerms
   },
