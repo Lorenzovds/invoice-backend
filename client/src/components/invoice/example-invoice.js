@@ -97,7 +97,7 @@ class ExampleInvoice extends Component {
           )
         }
         <Container className='invoice' style={{ minWidth: '595.28px', width: '595.28px', height: 'auto' }}>
-          <div ref={(input) => { this.invoiceDOM = input }}>
+          <div ref={(input) => { this.invoiceDOM = input }} style={{ backgroundColor: 'white' }}>
             {selectedInvoice && this.renderInvoiceHeader()}
             {selectedInvoice && shouldRenderDescription && this.renderInvoiceDescription()}
             {selectedInvoice && !shouldRenderDescription && this.renderInvoiceTable(0)}
@@ -214,7 +214,7 @@ class ExampleInvoice extends Component {
     return (
       <div>
         <Container style={{ display: 'flex', alignItems: 'center' }}>
-          <Image style={{ width: '250px', height: '100%', padding: '10px' }} src={`/${userLogo}.png`} />
+          <Image style={{ width: '250px', height: '100%', padding: '10px' }} src={`/${userLogo}`} />
           <Container textAlign='left' style={{ height: 'auto', paddingTop: '30px', paddingLeft: '10px' }}>
             <p> {userName}</p>
             <p style={headerStyle}> {userStreet} {userStreetNumber}</p>

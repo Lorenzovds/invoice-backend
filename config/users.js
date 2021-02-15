@@ -12,7 +12,7 @@ module.exports = {
     taxNr: 'BE 0690.876.560',
     iban: 'BE67 0018 3341 5487',
     bic: 'GEBABEBB',
-    logo: 'kevinvd2',
+    logo: 'kevinvd2.png',
     terms: defaultTerms
   },
   '00ue76zz5chMI4fio0h7': {
@@ -26,7 +26,7 @@ module.exports = {
     taxNr: 'BE 0762651414',
     iban: 'BE79 0018 9998 1133',
     bic: 'GEBABEBB',
-    logo: 'lorenzo',
+    logo: 'lorenzo.png',
     terms: defaultTerms
   },
   '00uh2j3izk2sbDj3N0h7':
@@ -41,7 +41,7 @@ module.exports = {
     taxNr: 'BE 0888.164.068',
     iban: 'BE66 0015 1596 8843',
     bic: 'GEBABEBB',
-    logo: 'filipdt2'
+    logo: 'filipdt2.png'
   },
   '00uws70re7DcH8ccQ0h7': {
     name: 'Dylan Verstraete',
@@ -54,7 +54,7 @@ module.exports = {
     taxNr: 'BE 0762.796.518',
     iban: 'BE87 7310 5166 4494',
     bic: 'KREDBEBB',
-    logo: 'dylan',
+    logo: 'dylan.png',
     terms: defaultTerms
   }
 }
