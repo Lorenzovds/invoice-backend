@@ -26,7 +26,7 @@ module.exports = {
     taxNr: 'BE 0762651414',
     iban: 'BE79 0018 9998 1133',
     bic: 'GEBABEBB',
-    logo: 'placeholder',
+    logo: 'lorenzo',
     terms: defaultTerms
   },
   '00uh2j3izk2sbDj3N0h7':
