@@ -23,7 +23,7 @@ module.exports = {
     zipcode: '9290',
     phone: '0471 65 49 70',
     mail: 'lorenzo.vandesijpe@hotmail.nl',
-    taxNr: 'BE 0762651414',
+    taxNr: 'BE 0762.651.414',
     iban: 'BE79 0018 9998 1133',
     bic: 'GEBABEBB',
     logo: 'lorenzo.png',
